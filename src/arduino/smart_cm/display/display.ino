@@ -1,7 +1,11 @@
 #include <LiquidCrystal_I2C.h>
 #include <EnableInterrupt.h>
+#include "Timer.h"
 
 LiquidCrystal_I2C lcd = LiquidCrystal_I2C(0x27,20,4); 
+
+//Sezione Timer
+Timer* timerTest1;
 
 //Sezione BTN
 int btn_up = 4;
@@ -25,6 +29,10 @@ void setup() {
   Serial.begin(9600);
   rowIndent = 0; 
 
+  //Timer-1
+  timerTest1 = new Timer();
+  timerTest1 -> setupPeriod(1000);
+  
   isCoffeeActive = true;
   isTheaActive = true;
   isChocolateActive = true;
@@ -54,47 +62,51 @@ void setup() {
 }
 
 void loop() {
-
-  if (n_thea > 0 && n_chocolate > 0 && n_coffee > 0) {
-    if (isCoffeeActive) {
-      lcd.setCursor(2, 0);
-      lcd.print("making a coffee");
-    }
-
-    if (isTheaActive) {
-      lcd.setCursor(2, 1);
-      lcd.print("making a tea");
-    }
-
-    if (isChocolateActive) {
-      lcd.setCursor(2, 2);
-      lcd.print("making a chocolate");
-    }
-  
-    delay(150);
-    int buttonStateDown = digitalRead(btn_down);
-    int buttonStateUP = digitalRead(btn_up);
-    int buttonSelection = digitalRead(btn_selection);
-  
-    if (buttonStateUP == HIGH) {
-      Serial.println("pushUp");
-      pushUP();
-    } 
-  
-    if (buttonStateDown == HIGH) {
-      Serial.println("pushDown");
-      pushDown();
-    }
-
-    if (buttonSelection == HIGH) {
-      selectBeverage();
-      lcd.clear();
-    } 
-  
-  } else if (n_thea == 0 || n_chocolate == 0 || n_coffee == 0) {
-    printAssistanceRequired();
-  }
+  timerTest1->waitForNextTick();
+  Serial.println("passato 1s");
 }
+
+
+//
+//  if (n_thea > 0 && n_chocolate > 0 && n_coffee > 0) {
+//    if (isCoffeeActive) {
+//      lcd.setCursor(2, 0);
+//      lcd.print("making a coffee");
+//    }
+//
+//    if (isTheaActive) {
+//      lcd.setCursor(2, 1);
+//      lcd.print("making a tea");
+//    }
+//
+//    if (isChocolateActive) {
+//      lcd.setCursor(2, 2);
+//      lcd.print("making a chocolate");
+//    }
+//  
+//    delay(150);
+//    int buttonStateDown = digitalRead(btn_down);
+//    int buttonStateUP = digitalRead(btn_up);
+//    int buttonSelection = digitalRead(btn_selection);
+//  
+//    if (buttonStateUP == HIGH) {
+//      Serial.println("pushUp");
+//      pushUP();
+//    } 
+//  
+//    if (buttonStateDown == HIGH) {
+//      Serial.println("pushDown");
+//      pushDown();
+//    }
+//
+//    if (buttonSelection == HIGH) {
+//      selectBeverage();
+//      lcd.clear();
+//    } 
+//  
+//  } else if (n_thea == 0 || n_chocolate == 0 || n_coffee == 0) {
+//    printAssistanceRequired();
+//  }
 
 void pushDown() {
   if (rowIndent < 2) {      
