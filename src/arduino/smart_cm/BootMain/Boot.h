@@ -10,6 +10,10 @@ class Boot {
     bool isInitializationComplete();
 
   private:
+    int btn_up;
+    int btn_down;
+    int btn_selection;
+  
     unsigned int timePauseBoot;
     unsigned int n_thea;
     unsigned int n_coffee;

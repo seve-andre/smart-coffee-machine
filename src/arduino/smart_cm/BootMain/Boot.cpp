@@ -39,6 +39,8 @@ void Boot::pauseBoot() {
 }
 
 void Boot::initialization() {
+  isReadyMessageShow = true;
+  
   showWelcomeMessage();
   pauseBoot();
 }

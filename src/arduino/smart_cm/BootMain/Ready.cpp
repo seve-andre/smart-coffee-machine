@@ -12,3 +12,7 @@ void Ready::showReadyMessage() {
     Serial.println("Machine Ready");
   }
 }
+
+void Ready::resetIsFirstReady() {
+  this->isFirstReady = true;
+}

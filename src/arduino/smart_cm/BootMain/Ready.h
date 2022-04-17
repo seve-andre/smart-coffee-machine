@@ -5,6 +5,7 @@ class Ready {
   public:
     Ready();
     void showReadyMessage();
+    void resetIsFirstReady();
 
   private:
     boolean isFirstReady;

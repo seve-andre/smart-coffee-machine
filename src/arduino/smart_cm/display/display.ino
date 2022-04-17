@@ -1,8 +1,10 @@
 #include <LiquidCrystal_I2C.h>
 #include <EnableInterrupt.h>
+#include "State.h"
 #include "Timer.h"
+#include "Indent.h"
 
-LiquidCrystal_I2C lcd = LiquidCrystal_I2C(0x27,20,4); 
+LiquidCrystal_I2C lcd = LiquidCrystal_I2C(0x27,20,4);
 
 //Sezione Timer
 Timer* timerTest1;
@@ -14,141 +16,148 @@ int btn_selection = 6;
 
 //Sezione LCD
 const int colIndent = 0;
-unsigned int rowIndent;
+Indent* rowIndent;
 
 //Sezione beverage
 unsigned int n_coffee;
 unsigned int n_thea;
 unsigned int n_chocolate;
+unsigned long timerIdle;
+unsigned int menuOption;
 
 boolean isCoffeeActive;
 boolean isTheaActive;
 boolean isChocolateActive;
+boolean isPrint;
+boolean isAssistanceRequired;
+boolean isAssistanceRequiredPrint;
 
 void setup() {
-  Serial.begin(9600);
-  rowIndent = 0; 
-
-  //Timer-1
-  timerTest1 = new Timer();
-  timerTest1 -> setupPeriod(1000);
+  //Serial.begin(9600);
+  //lcd.init();
+  //lcd.backlight();
   
-  isCoffeeActive = true;
-  isTheaActive = true;
-  isChocolateActive = true;
+  //rowIndent = new Indent();
+  //enableInterrupt(btn_selection, selectBeverage, FALLING);
+  //enableInterrupt(btn_down, moveDown, RISING);
+  //enableInterrupt(btn_up, moveUp, RISING);
 
   n_thea = 5;
   n_coffee = 5;
   n_chocolate = 5;
   
-  lcd.init();
-  lcd.backlight();
+  isPrint = true;
+  isAssistanceRequired = false;
+  isAssistanceRequiredPrint = false;
 
-  lcd.setCursor(colIndent, rowIndent); // Set the cursor on the third column and first row.
-  lcd.print("-");
-  lcd.setCursor(2, 0); // Set the cursor on the third column and first row.
-  lcd.print("making a coffee");
-  lcd.setCursor(2, 1); // Set the cursor on the third column and first row.
-  lcd.print("making a tea");
-  lcd.setCursor(2, 2); // Set the cursor on the third column and first row.
-  lcd.print("making a chocolate");
-
-  pinMode(btn_up, INPUT);
-  pinMode(btn_down, INPUT);
-  pinMode(btn_selection, INPUT);
-
-  //enableInterrupt(5, pushDown, CHANGE);
-  //enableInterrupt(4, pushUP, CHANGE);
+  timerIdle = millis();
 }
 
 void loop() {
-  timerTest1->waitForNextTick();
-  Serial.println("passato 1s");
-}
+  returnToReadyState();
+  lcd.setCursor(2, 2);
+  menuOption = rowIndent->getPositionIndent();
 
+  if (n_thea == 0 || n_chocolate == 0 || n_coffee == 0) {
+    isAssistanceRequired = true;
+    assistanceRequired();
+  }
 
-//
-//  if (n_thea > 0 && n_chocolate > 0 && n_coffee > 0) {
-//    if (isCoffeeActive) {
-//      lcd.setCursor(2, 0);
-//      lcd.print("making a coffee");
-//    }
-//
-//    if (isTheaActive) {
-//      lcd.setCursor(2, 1);
-//      lcd.print("making a tea");
-//    }
-//
-//    if (isChocolateActive) {
-//      lcd.setCursor(2, 2);
-//      lcd.print("making a chocolate");
-//    }
-//  
-//    delay(150);
-//    int buttonStateDown = digitalRead(btn_down);
-//    int buttonStateUP = digitalRead(btn_up);
-//    int buttonSelection = digitalRead(btn_selection);
-//  
-//    if (buttonStateUP == HIGH) {
-//      Serial.println("pushUp");
-//      pushUP();
-//    } 
-//  
-//    if (buttonStateDown == HIGH) {
-//      Serial.println("pushDown");
-//      pushDown();
-//    }
-//
-//    if (buttonSelection == HIGH) {
-//      selectBeverage();
-//      lcd.clear();
-//    } 
-//  
-//  } else if (n_thea == 0 || n_chocolate == 0 || n_coffee == 0) {
-//    printAssistanceRequired();
-//  }
+  if (!isAssistanceRequired) {
+    switch(menuOption) {
+      case 0:
+        if (isPrint) {
+          isPrint = false;
+          lcd.clear();
+          lcd.print("making a coffee");
+        }
+      break;
 
-void pushDown() {
-  if (rowIndent < 2) {      
-      rowIndent++;
+      case 1:
+        if (isPrint) {
+          isPrint = false;
+          lcd.clear(); 
+          lcd.print("making a tea");
+        }
+      break;
 
-      lcd.clear();
-      lcd.setCursor(colIndent, rowIndent); // Set the cursor on the third column and first row.
-      lcd.print("-");
+      case 2:
+        if (isPrint) {
+          isPrint = false;
+          lcd.clear();
+          lcd.print("making a chocolate");
+        }
+      break;
+    }
   }
 }
 
-void pushUP() {  
-  if (rowIndent > 0) {      
-      rowIndent--;
+void moveUp() {
+  timerIdle = millis();
+  rowIndent->moveUp();
+  isPrint = true;
+  Serial.println(rowIndent->getPositionIndent());
+}
 
-      lcd.clear();
-      lcd.setCursor(colIndent, rowIndent); // Set the cursor on the third column and first row.
-      lcd.print("-");
-  }
+void moveDown() {
+  timerIdle = millis();  
+  rowIndent->moveDown();
+  isPrint = true;
+  Serial.println(rowIndent->getPositionIndent());
 }
 
 void selectBeverage() {
-  Serial.print(n_coffee);
-  Serial.print(n_thea);
-  Serial.println(n_chocolate);
-  
-  switch(rowIndent) {
-    case 0:
-      n_coffee--;
-    break;
-    
-    case 1:
-      n_thea--;
-    break;
+  timerIdle = millis();
+  menuOption = rowIndent->getPositionIndent();
+  int buttonSelection = digitalRead(btn_selection);
 
-    case 2:
-      n_chocolate--;
-    break;
+  delay(50);
+  if (buttonSelection == LOW) {
+    switch(menuOption) {
+      case 0:
+        if (n_coffee < 1) {
+          n_coffee = 0;
+        } else {
+          n_coffee--;
+        }
+      break;
+    
+      case 1:
+        if (n_thea < 1) {
+          n_thea = 0;
+        } else {
+          n_thea--;
+        }
+      break;
+
+      case 2:
+        if (n_chocolate < 1) {
+          n_chocolate = 0;
+        } else {
+          n_chocolate--;
+        }
+      break;
+    }
   }
 }
 
-void printAssistanceRequired() {
-  lcd.setCursor(1,2);
-  lcd.print("Assistance Required");
+void assistanceRequired() {
+  if (!isAssistanceRequiredPrint) {
+    isAssistanceRequiredPrint = true;
+    lcd.clear();
+    lcd.print("Assistance Required");
+  }
+}
+
+void returnToReadyState() {
+  static unsigned long dt; 
+
+  dt = millis() - timerIdle;
+  
+  //scatta l'interrupt
+  if (dt >= 5000 && !isAssistanceRequired) {
+      timerIdle = millis();
+      lcd.clear();
+      lcd.print("Return to READY");
+  }
 }
