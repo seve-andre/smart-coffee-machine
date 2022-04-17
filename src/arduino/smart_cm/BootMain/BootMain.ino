@@ -4,11 +4,13 @@
 #include "Boot.h"
 #include "Ready.h"
 #include "Indent.h"
+#include "Assistance.h"
 
 LiquidCrystal_I2C lcd = LiquidCrystal_I2C(0x27,20,4);
 
 Boot* bootMachine;
 Ready* readyMachine;
+Assistance* ast;
 
 int btn_up = 4;
 int btn_down = 5;
@@ -42,10 +44,12 @@ void setup() {
   lcd.init();
   lcd.backlight();
   
-  readyState = 0;
   bootMachine = new Boot();
   readyMachine = new Ready();
   rowIndent = new Indent();
+  ast = new Assistance();
+
+  readyState = 0;
   isMenuInitialize = false;
 }
 
@@ -69,7 +73,7 @@ void loop() {
 
     case 3:
       isAssistanceRequired = true;
-      assistanceRequired();
+      ast->assistanceRequired();
     break;
   }
 }
@@ -151,14 +155,12 @@ void moveUp() {
   timerIdle = millis();
   rowIndent->moveUp();
   isPrint = true;
-  Serial.println(rowIndent->getPositionIndent());
 }
 
 void moveDown() {
   timerIdle = millis();  
   rowIndent->moveDown();
   isPrint = true;
-  Serial.println(rowIndent->getPositionIndent());
 }
 
 void selectBeverage() {
@@ -196,13 +198,13 @@ void selectBeverage() {
   }
 }
 
-void assistanceRequired() {
-  if (!isAssistanceRequiredPrint) {
-    isAssistanceRequiredPrint = true;
-    lcd.clear();
-    lcd.print("Assistance Required");
-  }
-}
+//void assistanceRequired() {
+//  if (!isAssistanceRequiredPrint) {
+//    isAssistanceRequiredPrint = true;
+//    lcd.clear();
+//    lcd.print("Assistance Required");
+//  }
+//}
 
 void returnToReadyState() {
   static unsigned long dt; 
