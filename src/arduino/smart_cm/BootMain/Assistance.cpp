@@ -11,6 +11,7 @@ void Assistance::assistanceRequired() {
     isAssistanceTriggered = true;
     isAssistanceRequiredPrint = true;
     lcd.clear();
+    lcd.setCursor(0, 1);
     lcd.print("Assistance Required");
   }
 }

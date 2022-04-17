@@ -13,10 +13,10 @@ Boot::Boot() {
 }
   
 void Boot::showWelcomeMessage() {
-    //Da cambiare con stampa su LCD
     if (isWelcomeMessageShow) {
       isWelcomeMessageShow = false;
-      Serial.println("Welcome to Smart Caffee Machine");
+      lcd.setCursor(0, 1);
+      lcd.print("Welcome to Smart Caffee Machine");
     }
     
     pauseBoot();

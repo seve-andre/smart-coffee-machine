@@ -1,5 +1,6 @@
 #include <LiquidCrystal_I2C.h>
 #include <EnableInterrupt.h>
+
 #include "BootMain.h"
 #include "Boot.h"
 #include "Ready.h"
@@ -95,7 +96,6 @@ void goToMenuState() {
 
 void loopMenu() {
   returnToReadyState();
-  lcd.setCursor(2, 2);
   menuOption = rowIndent->getPositionIndent();
 
   if (n_thea == 0 || n_chocolate == 0 || n_coffee == 0) {
@@ -108,6 +108,7 @@ void loopMenu() {
         if (isPrint) {
           isPrint = false;
           lcd.clear();
+          lcd.setCursor(0, 1);
           lcd.print("making a coffee");
         }
       break;
@@ -116,6 +117,7 @@ void loopMenu() {
         if (isPrint) {
           isPrint = false;
           lcd.clear(); 
+          lcd.setCursor(0, 1);
           lcd.print("making a tea");
         }
       break;
@@ -124,6 +126,7 @@ void loopMenu() {
         if (isPrint) {
           isPrint = false;
           lcd.clear();
+          lcd.setCursor(0, 1);
           lcd.print("making a chocolate");
         }
       break;
@@ -197,14 +200,6 @@ void selectBeverage() {
     }
   }
 }
-
-//void assistanceRequired() {
-//  if (!isAssistanceRequiredPrint) {
-//    isAssistanceRequiredPrint = true;
-//    lcd.clear();
-//    lcd.print("Assistance Required");
-//  }
-//}
 
 void returnToReadyState() {
   static unsigned long dt; 

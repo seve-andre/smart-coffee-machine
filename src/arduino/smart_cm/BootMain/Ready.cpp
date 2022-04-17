@@ -1,5 +1,6 @@
 #include "Arduino.h"
 #include "Ready.h"
+#include "BootMain.h"
 
 Ready::Ready() {
   this-> isFirstReady = true;
@@ -8,8 +9,9 @@ Ready::Ready() {
 void Ready::showReadyMessage() {
   if (isFirstReady) {
     isFirstReady = false;
-    //Da cambiare con stampa su LCD
-    Serial.println("Machine Ready");
+    lcd.clear();
+    lcd.setCursor(0, 1);
+    lcd.print("Ready");
   }
 }
 
