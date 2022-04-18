@@ -17,5 +17,5 @@ void setup() {
 }
 
 void loop() {
-  myservo->prepareDrink();
+  myservo->prepareDrink(1);
 }

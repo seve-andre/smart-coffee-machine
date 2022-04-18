@@ -13,7 +13,9 @@ void ServoMotor::beginningDrinkOut() {
 }
 
 //Simulate the drink out
-void ServoMotor::prepareDrink() {
+void ServoMotor::prepareDrink(unsigned int n_drink) {
+  this->n_drink = n_drink;
+  
   if (!startServoTo180) {
     moveServoTo180();
   } else if (!startServoTo0) {
@@ -44,5 +46,21 @@ void ServoMotor::moveServoTo0() {
   
   servoMotor.write(1); 
   stateProduct = PRODUCT_READY;
-  Serial.println("The XXX is ready");
+  printMessageDrinkReady(n_drink);
+}
+
+void ServoMotor::printMessageDrinkReady(unsigned int n_drink) {
+   switch(n_drink) {
+    case 0:
+      Serial.println("The Coffee is ready");
+    break;
+
+    case 1:
+      Serial.println("The Thea is ready");
+    break;
+
+    case 2:
+      Serial.println("The Chocolate is ready");
+    break;
+   }   
 }
