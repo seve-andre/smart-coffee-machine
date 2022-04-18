@@ -4,8 +4,8 @@
 class Indent {
   public:
     Indent();
-    void moveUp();
-    void moveDown();
+    void moveNext();
+    void movePrev();
     int getPositionIndent();
     
     const unsigned int maxRow = 2;

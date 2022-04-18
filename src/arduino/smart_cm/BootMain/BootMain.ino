@@ -1,6 +1,7 @@
 #include <LiquidCrystal_I2C.h>
 #include <EnableInterrupt.h>
 
+#include "Beverage.h"
 #include "BootMain.h"
 #include "Boot.h"
 #include "Ready.h"
@@ -12,9 +13,10 @@ LiquidCrystal_I2C lcd = LiquidCrystal_I2C(0x27,20,4);
 Boot* bootMachine;
 Ready* readyMachine;
 Assistance* ast;
+Beverage* drink;
 
-int btn_up = 4;
-int btn_down = 5;
+int btn_up = 5;
+int btn_down = 4;
 int btn_selection = 6;
 
 unsigned int readyState;
@@ -49,6 +51,7 @@ void setup() {
   readyMachine = new Ready();
   rowIndent = new Indent();
   ast = new Assistance();
+  drink = new Beverage();
 
   readyState = 0;
   isMenuInitialize = false;
@@ -96,38 +99,39 @@ void goToMenuState() {
 
 void loopMenu() {
   returnToReadyState();
-  menuOption = rowIndent->getPositionIndent();
-
-  if (n_thea == 0 || n_chocolate == 0 || n_coffee == 0) {
+  if (drink->getNThea() == 0 || drink->getNChocolate() == 0 || drink->getNCoffee() == 0) {
     readyState = 3;
   }
 
   if (!isAssistanceRequired) {
+    menuOption = rowIndent->getPositionIndent();
+    delay(30);
+    
     switch(menuOption) {
       case 0:
         if (isPrint) {
+          Serial.println(menuOption);
           isPrint = false;
           lcd.clear();
-          lcd.setCursor(0, 1);
-          lcd.print("making a coffee");
+          drink->printCoffeeMessage();
         }
       break;
 
       case 1:
         if (isPrint) {
+          Serial.println(menuOption);
           isPrint = false;
-          lcd.clear(); 
-          lcd.setCursor(0, 1);
-          lcd.print("making a tea");
+          lcd.clear();
+          drink->printTheaMessage();
         }
       break;
 
       case 2:
         if (isPrint) {
+          Serial.println(menuOption);
           isPrint = false;
           lcd.clear();
-          lcd.setCursor(0, 1);
-          lcd.print("making a chocolate");
+          drink->printChocolateMessage();
         }
       break;
     }
@@ -137,14 +141,10 @@ void loopMenu() {
 void menuInitialization() {
   if (!isMenuInitialize) {
     enableInterrupt(btn_selection, selectBeverage, FALLING);
-    enableInterrupt(btn_down, moveDown, RISING);
-    enableInterrupt(btn_up, moveUp, RISING);
+    enableInterrupt(btn_down, movePrev, RISING);
+    enableInterrupt(btn_up, moveNext, RISING);
 
-    //Da inserire in altro metodo separato  
-    n_thea = 5;
-    n_coffee = 5;
-    n_chocolate = 5;
-  
+    //Da inserire in altro metodo separato
     isPrint = true;
     isAssistanceRequired = false;
     isAssistanceRequiredPrint = false;
@@ -154,16 +154,20 @@ void menuInitialization() {
   }
 }
 
-void moveUp() {
+void moveNext() {
+  //Serial.println("Premuto");
   timerIdle = millis();
-  rowIndent->moveUp();
+  rowIndent->moveNext();
   isPrint = true;
+  delay(100);
 }
 
-void moveDown() {
+void movePrev() {
+  //Serial.println("Premuto");
   timerIdle = millis();  
-  rowIndent->moveDown();
+  rowIndent->movePrev();
   isPrint = true;
+  delay(100);
 }
 
 void selectBeverage() {
@@ -175,27 +179,15 @@ void selectBeverage() {
   if (buttonSelection == LOW) {
     switch(menuOption) {
       case 0:
-        if (n_coffee < 1) {
-          n_coffee = 0;
-        } else {
-          n_coffee--;
-        }
+        drink->takeACoffee();
       break;
     
       case 1:
-        if (n_thea < 1) {
-          n_thea = 0;
-        } else {
-          n_thea--;
-        }
+        drink->takeAThea();
       break;
 
       case 2:
-        if (n_chocolate < 1) {
-          n_chocolate = 0;
-        } else {
-          n_chocolate--;
-        }
+        drink->takeAChocolate();
       break;
     }
   }
