@@ -7,6 +7,7 @@
 #include "Ready.h"
 #include "Indent.h"
 #include "Assistance.h"
+#include "ServoMotor.h"
 
 LiquidCrystal_I2C lcd = LiquidCrystal_I2C(0x27,20,4);
 
@@ -14,6 +15,7 @@ Boot* bootMachine;
 Ready* readyMachine;
 Assistance* ast;
 Beverage* drink;
+ServoMotor* myservo;
 
 int btn_up = 5;
 int btn_down = 4;
@@ -52,6 +54,7 @@ void setup() {
   rowIndent = new Indent();
   ast = new Assistance();
   drink = new Beverage();
+  myservo = new ServoMotor(9);
 
   readyState = 0;
   isMenuInitialize = false;
@@ -78,6 +81,17 @@ void loop() {
     case 3:
       isAssistanceRequired = true;
       ast->assistanceRequired();
+    break;
+
+    //Stato->MakingDrink
+    case 4:
+      timerIdle = millis();
+      myservo->prepareDrink(rowIndent->getPositionIndent());
+    break;
+
+    //Stato->ProductReady
+    case 5:
+    //...
     break;
   }
 }
@@ -155,7 +169,6 @@ void menuInitialization() {
 }
 
 void moveNext() {
-  //Serial.println("Premuto");
   timerIdle = millis();
   rowIndent->moveNext();
   isPrint = true;
@@ -163,7 +176,6 @@ void moveNext() {
 }
 
 void movePrev() {
-  //Serial.println("Premuto");
   timerIdle = millis();  
   rowIndent->movePrev();
   isPrint = true;
@@ -174,20 +186,24 @@ void selectBeverage() {
   timerIdle = millis();
   menuOption = rowIndent->getPositionIndent();
   int buttonSelection = digitalRead(btn_selection);
+  //Serial.println(drink->getNCoffee());
 
-  delay(50);
+  //delay(50);
   if (buttonSelection == LOW) {
     switch(menuOption) {
       case 0:
         drink->takeACoffee();
+        readyState = 4;
       break;
     
       case 1:
         drink->takeAThea();
+        readyState = 4; 
       break;
 
       case 2:
         drink->takeAChocolate();
+        readyState = 4;
       break;
     }
   }
