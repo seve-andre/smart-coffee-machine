@@ -161,6 +161,7 @@ void menuInitialization() {
     isAssistanceRequired = false;
     isAssistanceRequiredPrint = false;
 
+    //TO-DO
     //Da inserire in altro metodo perchè altrimenti scatta allo stato Ready dopo 10s
     //timerIdle = millis();
     isMenuInitialize = true;
@@ -209,7 +210,7 @@ void selectBeverage() {
 }
 
 void returnToReadyState() {  
-  //scatta l'interrupt
+  //Interrupt
   if ((millis() - timerIdle) >= 5000 && !isAssistanceRequired) {
       timerIdle = millis();
       lcd.clear();
