@@ -61,6 +61,8 @@ void setup() {
 }
 
 void loop() {  
+  returnToReadyState();
+
   switch(readyState) {
     case 0:
       bootButtonIntialization();
@@ -111,8 +113,7 @@ void goToMenuState() {
 //State-2
 //-------------------------------
 
-void loopMenu() {
-  returnToReadyState();
+void loopMenu() {  
   if (drink->getNThea() == 0 || drink->getNChocolate() == 0 || drink->getNCoffee() == 0) {
     readyState = 3;
   }
@@ -124,7 +125,6 @@ void loopMenu() {
     switch(menuOption) {
       case 0:
         if (isPrint) {
-          Serial.println(menuOption);
           isPrint = false;
           lcd.clear();
           drink->printCoffeeMessage();
@@ -133,7 +133,6 @@ void loopMenu() {
 
       case 1:
         if (isPrint) {
-          Serial.println(menuOption);
           isPrint = false;
           lcd.clear();
           drink->printTheaMessage();
@@ -142,7 +141,6 @@ void loopMenu() {
 
       case 2:
         if (isPrint) {
-          Serial.println(menuOption);
           isPrint = false;
           lcd.clear();
           drink->printChocolateMessage();
@@ -163,7 +161,8 @@ void menuInitialization() {
     isAssistanceRequired = false;
     isAssistanceRequiredPrint = false;
 
-    timerIdle = millis();
+    //Da inserire in altro metodo perchè altrimenti scatta allo stato Ready dopo 10s
+    //timerIdle = millis();
     isMenuInitialize = true;
   }
 }
@@ -172,14 +171,14 @@ void moveNext() {
   timerIdle = millis();
   rowIndent->moveNext();
   isPrint = true;
-  delay(100);
+  delay(50);
 }
 
 void movePrev() {
   timerIdle = millis();  
   rowIndent->movePrev();
   isPrint = true;
-  delay(100);
+  delay(50);
 }
 
 void selectBeverage() {
@@ -188,7 +187,7 @@ void selectBeverage() {
   int buttonSelection = digitalRead(btn_selection);
   //Serial.println(drink->getNCoffee());
 
-  //delay(50);
+  delay(50);
   if (buttonSelection == LOW) {
     switch(menuOption) {
       case 0:
@@ -209,16 +208,13 @@ void selectBeverage() {
   }
 }
 
-void returnToReadyState() {
-  static unsigned long dt; 
-
-  dt = millis() - timerIdle;
-  
+void returnToReadyState() {  
   //scatta l'interrupt
-  if (dt >= 5000 && !isAssistanceRequired) {
+  if ((millis() - timerIdle) >= 5000 && !isAssistanceRequired) {
       timerIdle = millis();
       lcd.clear();
       readyMachine->resetIsFirstReady();
       readyState = 1;
+      Serial.println("Ready");
   }
 }
