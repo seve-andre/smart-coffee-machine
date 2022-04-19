@@ -17,6 +17,6 @@ class Drink {
 
   private:
     unsigned int quantity;
-}
+};
 
 #endif

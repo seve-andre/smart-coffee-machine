@@ -6,6 +6,6 @@
 class DrinkFactory {
   public:
     static Drink* makeDrink(Drink::Type drinkType);
-}
+};
 
 #endif
