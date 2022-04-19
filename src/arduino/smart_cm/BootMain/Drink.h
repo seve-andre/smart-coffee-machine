@@ -11,7 +11,7 @@ class Drink {
     virtual void printDrink() = 0;
 
   protected:
-    void printMessage(String msg) {
+    void printMessage(char msg) {
       // lcd.print("making a " + msg + "...");
     };
 

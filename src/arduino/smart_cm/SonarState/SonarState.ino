@@ -7,7 +7,7 @@ const int echoPort = 10;
 
 void setup() {
   Serial.begin(9600);
-  proximitySensor = new Sonar(echoPort, triggerPort, 20);
+  proximitySensor = new Sonar(echoPort, triggerPort);
 }
 
 void loop() {

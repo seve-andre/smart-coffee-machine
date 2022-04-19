@@ -8,6 +8,7 @@
 #include "Indent.h"
 #include "Assistance.h"
 #include "ServoMotor.h"
+#include "Sonar.h"
 
 LiquidCrystal_I2C lcd = LiquidCrystal_I2C(0x27,20,4);
 
@@ -16,10 +17,14 @@ Ready* readyMachine;
 Assistance* ast;
 Beverage* drink;
 ServoMotor* myservo;
+Sonar* proxSensor;
 
-int btn_up = 5;
-int btn_down = 4;
-int btn_selection = 6;
+const int btn_up = 5;
+const int btn_down = 4;
+const int btn_selection = 6;
+
+const int triggerPort = 11;
+const int echoPort = 10;
 
 unsigned int readyState;
 
@@ -33,6 +38,7 @@ unsigned int n_coffee;
 unsigned int n_thea;
 unsigned int n_chocolate;
 unsigned long timerIdle;
+unsigned long timerSonar;
 unsigned int menuOption;
 
 boolean isCoffeeActive;
@@ -55,6 +61,7 @@ void setup() {
   ast = new Assistance();
   drink = new Beverage();
   myservo = new ServoMotor(9);
+  proxSensor = new Sonar(echoPort, triggerPort);
 
   readyState = 0;
   isMenuInitialize = false;
@@ -80,6 +87,7 @@ void loop() {
       loopMenu();
     break;
 
+    //Stato->Assistance Required
     case 3:
       isAssistanceRequired = true;
       ast->assistanceRequired();
@@ -87,13 +95,15 @@ void loop() {
 
     //Stato->MakingDrink
     case 4:
-      timerIdle = millis();
       myservo->prepareDrink(rowIndent->getPositionIndent());
+      timerSonar = millis();
     break;
 
     //Stato->ProductReady
     case 5:
-    //...
+      lcd.setCursor(1,0);
+      lcd.print("Bevanda Pronta!");
+      activateSonar();
     break;
   }
 }
@@ -105,6 +115,8 @@ void bootButtonIntialization() {
 }
 
 void goToMenuState() {
+  timerIdle = millis();
+  
   if (bootMachine->isInitializationComplete()) {
     readyState = 2;
   }
@@ -163,6 +175,7 @@ void menuInitialization() {
 
     //TO-DO
     //Da inserire in altro metodo perchè altrimenti scatta allo stato Ready dopo 10s
+    
     //timerIdle = millis();
     isMenuInitialize = true;
   }
@@ -176,7 +189,7 @@ void moveNext() {
 }
 
 void movePrev() {
-  timerIdle = millis();  
+  //timerIdle = millis();  
   rowIndent->movePrev();
   isPrint = true;
   delay(50);
@@ -211,11 +224,31 @@ void selectBeverage() {
 
 void returnToReadyState() {  
   //Interrupt
-  if ((millis() - timerIdle) >= 5000 && !isAssistanceRequired) {
+  if ((millis() - timerIdle) >= 5000 && !isAssistanceRequired && readyState == 2) {
       timerIdle = millis();
       lcd.clear();
       readyMachine->resetIsFirstReady();
       readyState = 1;
       Serial.println("Ready");
+  }
+}
+
+//Timer per Sonar
+void returnToMenuState() {  
+  //Interrupt
+  if ((millis() - timerSonar) >= 5000) {
+      timerSonar = millis();
+      lcd.clear();
+      readyState = 2;
+      Serial.println("Tempo Finito");
+  }
+}
+
+void activateSonar() {
+  //finire di implementare timer 5s
+  if (proxSensor->isDrinkTaken()) {
+    Serial.println("Bevanda Presa");
+    myservo->moveServoTo0();
+    readyState = 2;
   }
 }

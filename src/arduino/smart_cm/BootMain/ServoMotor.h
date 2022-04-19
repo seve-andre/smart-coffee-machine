@@ -14,7 +14,7 @@ class ServoMotor {
     
   private:
     Servo servoMotor;
-    enum { PRODUCT_NOT_READY, PRODUCT_READY} stateProduct;
+    enum {PRODUCT_NOT_READY, PRODUCT_READY} stateProduct;
 
     unsigned int n_drink;
     int pos;

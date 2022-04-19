@@ -49,7 +49,8 @@ void ServoMotor::moveServoTo0() {
   stateProduct = PRODUCT_READY;
   printMessageDrinkReady(n_drink);
   beginningDrinkOut();
-  readyState = 2;
+  //readyState = 2;
+  readyState = 5; //Stato-5 per prendere la bevanda con il sonar e presa la bevanda tornare allo Stato-2.
 }
 
 void ServoMotor::printMessageDrinkReady(unsigned int n_drink) {
