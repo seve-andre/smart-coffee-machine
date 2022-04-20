@@ -11,5 +11,5 @@ void setup() {
 }
 
 void loop() {
-  Serial.println(proximitySensor->getDistance());
+  Serial.println(proximitySensor->isDrinkTaken());
 }
