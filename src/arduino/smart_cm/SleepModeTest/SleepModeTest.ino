@@ -2,29 +2,19 @@
 #include <avr/sleep.h>
 #include <PinChangeInterrupt.h>
 
-Timer* t1;
-
 unsigned long Tidle;
 bool userDetected;
 
 void setup() {
   Serial.begin(9600);
   pinMode(10, INPUT);
-  
-  t1 = new Timer();
-  t1->setupPeriod(2000);
 
   attachPCINT(digitalPinToPCINT(10), wakeUpNow, RISING);
 }
 
 void loop() {
   int pir = digitalRead(10);
-
-  if (pir) {
-    userDetected = true;
-  } else {
-    userDetected = false;
-  }
+  userDetected = pir;  
   
   timeBeforePause();
   Serial.println("Arduino ATTIVO");
@@ -53,7 +43,7 @@ void timeBeforePause() {
   dt = millis() - Tidle;
 
   //Interrupt
-  if (dt >= 5000 && !userDetected) {
+  if (dt >= 60000 && !userDetected) {
       Serial.println("user not detected, go to sleep");
       Tidle = millis();
       sleepNow();
