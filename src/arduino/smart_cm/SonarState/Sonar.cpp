@@ -15,12 +15,6 @@ float Sonar::getSoundSpeed() {
 
 bool Sonar::isDrinkTaken() {
   return (getDistance() >= MAX_DISTANCE);
-
-//  if (d < MAX_DISTANCE) {
-//      return true; 
-//  } else if (d >= MAX_DISTANCE) {
-//    return NO_OBJ_DETECTED;
-//  }
 }
 
 float Sonar::getDistance() {
@@ -29,17 +23,16 @@ float Sonar::getDistance() {
     digitalWrite(trigPort,HIGH);
     delayMicroseconds(10);
     digitalWrite(trigPort,LOW);
-    
+
     long tUS = pulseInLong(echoPort, HIGH);
     float t = tUS / 1000.0 / 1000.0 / 2;
     float d = t*getSoundSpeed();
 
-    //Serial.println(d);
     delay(50);
 
     if (d < 0.04 || d > 10.0) {
       d = 0.00;
     }
-    
+        
     return d;
 }

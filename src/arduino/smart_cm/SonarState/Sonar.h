@@ -11,11 +11,12 @@ class Sonar {
 public:  
   Sonar(int echoPort, int trigPort);
   bool isDrinkTaken();
+  float getDistance();
 
 private:
     const float vs = 331.5 + 0.6*20;
     float getSoundSpeed();
-    float getDistance();
+    
     
     float temperature;    
     int echoPort, trigPort;
