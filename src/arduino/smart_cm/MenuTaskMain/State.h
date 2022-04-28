@@ -3,4 +3,4 @@ enum MachineState {
       WORKING,
       SELF_TEST,
       SLEEP
-}machineState;
+};

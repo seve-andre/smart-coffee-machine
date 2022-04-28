@@ -4,6 +4,7 @@
 #include "Arduino.h"
 #include <avr/sleep.h>
 #include <PinChangeInterrupt.h>
+#include "CoffeeMachine.h"
 
 unsigned long Tidle;
 bool userDetected;
@@ -56,9 +57,11 @@ bool userDetected;
 //-------------------------------------------------------
 
 Pir* presenceSensor;
+CoffeeMachine* coffeeMachine;
 
 DetectPresenceTask::DetectPresenceTask() {
   presenceSensor = new Pir(10);
+  coffeeMachine = new CoffeeMachine();
 }
 
 bool DetectPresenceTask::isUserDetected() {
@@ -66,10 +69,10 @@ bool DetectPresenceTask::isUserDetected() {
 }
 
 void DetectPresenceTask::tick() {
-  if (isUserDetected()) {
-    
-    Serial.println("USER_DETECTED");
-  } else {
-    Serial.println("USER_NOT_DETECTED");
-  }
+  coffeeMachine->doState();
+//  if (isUserDetected()) {
+//    Serial.println("USER_DETECTED");
+//  } else {
+//    Serial.println("USER_NOT_DETECTED");
+//  }
 }

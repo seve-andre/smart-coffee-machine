@@ -2,11 +2,12 @@
 
 class CoffeeMachine {
   private:
-    CoffeeMachine();
     void startWorking();
     void goToSleep();
     void doSelfTest();
     
-  public:  
-    void setMachineState(MachineState newState);
+  public:
+    CoffeeMachine();
+    void doState();
+    static void nextWorkingState();
 };
