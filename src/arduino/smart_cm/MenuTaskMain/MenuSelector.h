@@ -1,7 +1,6 @@
 #ifndef __MENU_SELECTOR__
 #define __MENU_SELECTOR__
 
-#include <LiquidCrystal_I2C.h>
 #include "Drink.h"
 
 

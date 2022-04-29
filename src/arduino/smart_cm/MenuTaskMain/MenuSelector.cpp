@@ -3,8 +3,8 @@
 #include "Drink.h"
 #include "ButtonImpl.h"
 #include "CoffeeMachine.h"
+#include "Lcd.h"
 
-LiquidCrystal_I2C lcd = LiquidCrystal_I2C(0x27, 20, 4);
 ButtonImpl* btnUp;
 ButtonImpl* btnDown;
 ButtonImpl* btnMake;
@@ -13,6 +13,7 @@ unsigned long timerIdle;
 
 bool btnUpClick;
 bool btnDownClick;
+Lcd* lcd;
 
 Drink::Type drinks[3] = {
   Drink::Coffee,
@@ -24,9 +25,8 @@ MenuSelector::MenuSelector() {
   btnUp = new ButtonImpl(4);
   btnDown = new ButtonImpl(5);
   btnMake = new ButtonImpl(6);
-  
-  lcd.init();
-  lcd.backlight();
+
+  lcd = Lcd::getInstance();
   
   this->currentSelection = 0;
   timerIdle = millis();
@@ -53,8 +53,6 @@ Drink::Type MenuSelector::getSelected() {
 }
 
 void MenuSelector::printSelection() {
-  lcd.clear();
-
   if (btnDown->isPressed()) {
     if (!btnDownClick) {
       btnDownClick = true;
@@ -90,15 +88,14 @@ void MenuSelector::printSelection() {
     break;
   }
 
-  lcd.setCursor(1,0);
-  lcd.print(drinkMessage);
+  lcd->print(drinkMessage);
 }
 
 void MenuSelector::returnToReadyState() {  
   //Interrupt
   if ((millis() - timerIdle) >= 5000) { //&& !isAssistanceRequired && readyState == 2) {
       timerIdle = millis();
-      lcd.clear();
+      // lcd.clear();
       CoffeeMachine::nextWorkingState();
       //readyMachine->resetIsFirstReady();
       //readyState = 1;
