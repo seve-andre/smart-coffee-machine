@@ -48,6 +48,10 @@ void MenuSelector::movePrev() {
   }
 }
 
+Drink::Type MenuSelector::getSelected() {
+  return drinks[currentSelection];
+}
+
 void MenuSelector::printSelection() {
   lcd.clear();
 
@@ -69,23 +73,25 @@ void MenuSelector::printSelection() {
   } if (!btnUp->isPressed()) {
     btnUpClick = false;
   }
-  
+
+  char drinkMessage[10];
+
   switch (drinks[currentSelection]) {
     case Drink::Coffee:
-      lcd.setCursor(1,0);
-      lcd.print("Coffee");
+      strcpy(drinkMessage, "Coffee");
     break;
     
     case Drink::Tea:
-     lcd.setCursor(1,0);
-     lcd.print("Tea");
+      strcpy(drinkMessage, "Tea");
     break;
     
     case Drink::Chocolate:
-     lcd.setCursor(1,0);
-     lcd.print("Chocolate");
+      strcpy(drinkMessage, "Chocolate");
     break;
   }
+
+  lcd.setCursor(1,0);
+  lcd.print(drinkMessage);
 }
 
 void MenuSelector::returnToReadyState() {  

@@ -2,6 +2,7 @@
 #define __MENU_SELECTOR__
 
 #include <LiquidCrystal_I2C.h>
+#include "Drink.h"
 
 
 class MenuSelector {
@@ -11,6 +12,7 @@ class MenuSelector {
     void movePrev();
     void printSelection();
     void returnToReadyState();
+    Drink::Type getSelected();
 
   private:
     const unsigned int maxNSelection = 2;
