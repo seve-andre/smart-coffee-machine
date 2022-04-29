@@ -2,14 +2,19 @@
 #include "WorkingState.h"
 #include "Arduino.h"
 #include "MenuSelector.h"
+#include "WorkingState.h"
+#include "DrinkMaker.h"
 
 MachineState machineState;
 MenuSelector* menuSelector;
+DrinkMaker* drinkMake;
+WorkingState workingState;
 
 CoffeeMachine::CoffeeMachine() {
   machineState = MachineState::WORKING;
   menuSelector = new MenuSelector();
-  workingState = MENU_SELECTION;
+  drinkMake = new DrinkMaker();
+  workingState = WorkingState::MENU_SELECTION;
 }
 
 void CoffeeMachine::startWorking() {
@@ -17,6 +22,7 @@ void CoffeeMachine::startWorking() {
     case WELCOME:
     break;
     case READY:
+      Serial.println("in ready");
     break;
     case WAIT_FOR_BUTTON_INPUT:
     break;
@@ -25,9 +31,10 @@ void CoffeeMachine::startWorking() {
       menuSelector->returnToReadyState();
     break;
     case MAKE_DRINK:
-      Serial.println("preparo drink");
+      drinkMake->prepareDrink(menuSelector->getSelected());
     break;
     case TAKE_DRINK:
+      Serial.println("Take Drink");
     break;
   }
 }
@@ -46,8 +53,8 @@ void CoffeeMachine::doState() {
   }
 }
 
-void CoffeeMachine::nextWorkingState() {
-  workingState = READY;
+void CoffeeMachine::goToState(WorkingState newState) {
+  workingState = newState;
 }
 
 void CoffeeMachine::goToSleep() {

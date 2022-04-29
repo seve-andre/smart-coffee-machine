@@ -64,7 +64,7 @@ void MenuSelector::printSelection() {
       movePrev();
     }
   } else if (btnMake->isPressed()) {
-    //CoffeeMachine::nextWorkingState();
+    CoffeeMachine::goToState(WorkingState::MAKE_DRINK);
     return;
   } else if (!btnDown->isPressed()) {
     btnDownClick = false;
@@ -95,10 +95,7 @@ void MenuSelector::returnToReadyState() {
   //Interrupt
   if ((millis() - timerIdle) >= 5000) { //&& !isAssistanceRequired && readyState == 2) {
       timerIdle = millis();
-      // lcd.clear();
-      CoffeeMachine::nextWorkingState();
-      //readyMachine->resetIsFirstReady();
-      //readyState = 1;
-      //Serial.println("Ready");
+      lcd->clear();
+      CoffeeMachine::goToState(WorkingState::READY);
   }
 }

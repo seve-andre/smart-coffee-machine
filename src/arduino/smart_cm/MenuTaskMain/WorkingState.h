@@ -1,3 +1,6 @@
+#ifndef __WORKING_STATE__
+#define __WORKING_STATE__
+
 enum WorkingState {
   WELCOME,
   READY,
@@ -5,4 +8,6 @@ enum WorkingState {
   MENU_SELECTION,
   MAKE_DRINK,
   TAKE_DRINK
-}workingState;
+};
+
+#endif
