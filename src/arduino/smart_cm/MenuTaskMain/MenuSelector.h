@@ -10,6 +10,7 @@ class MenuSelector {
     void moveNext();
     void movePrev();
     void printSelection();
+    void returnToReadyState();
 
   private:
     const unsigned int maxNSelection = 2;

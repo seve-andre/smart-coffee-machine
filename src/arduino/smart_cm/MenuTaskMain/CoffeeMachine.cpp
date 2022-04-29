@@ -22,6 +22,7 @@ void CoffeeMachine::startWorking() {
     break;
     case MENU_SELECTION:
       menuSelector->printSelection();
+      menuSelector->returnToReadyState();
     break;
     case MAKE_DRINK:
       Serial.println("preparo drink");
@@ -46,7 +47,7 @@ void CoffeeMachine::doState() {
 }
 
 void CoffeeMachine::nextWorkingState() {
-  workingState = MAKE_DRINK;
+  workingState = READY;
 }
 
 void CoffeeMachine::goToSleep() {
