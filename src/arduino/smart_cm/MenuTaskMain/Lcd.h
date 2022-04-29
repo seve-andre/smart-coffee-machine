@@ -8,6 +8,7 @@ class Lcd {
     static Lcd* getInstance();
     void print(char message[]);
     void printAt(int n_col, int n_row, char message[]);
+    void clear();
 
   private:
     LiquidCrystal_I2C lcd = LiquidCrystal_I2C(0x27, 20, 4);

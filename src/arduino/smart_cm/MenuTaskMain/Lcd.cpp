@@ -17,6 +17,10 @@ void Lcd::printAt(int n_col, int n_row, char message[]) {
   printNewMessageAt(n_col, n_row, message);
 }
 
+void Lcd::clear() {
+  lcd.clear();
+}
+
 // private - called for internal printing from public methods
 void Lcd::printNewMessageAt(int n_col, int n_row, char message[]) {
   lcd.clear();
