@@ -12,11 +12,11 @@ class Drink {
 
   protected:
     void printMessage(char msg) {
-      // lcd.print("making a " + msg + "...");
+        //lcd.print("making a " + msg + "...");
     };
 
-  private:
-    unsigned int quantity;
+    private:
+      unsigned int quantity;
 };
 
 #endif

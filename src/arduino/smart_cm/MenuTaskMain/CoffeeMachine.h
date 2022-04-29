@@ -1,4 +1,5 @@
 #include "State.h"
+#include "WorkingState.h";
 
 class CoffeeMachine {
   private:
@@ -9,5 +10,5 @@ class CoffeeMachine {
   public:
     CoffeeMachine();
     void doState();
-    static void nextWorkingState();
+    static void goToState(WorkingState newState);
 };
