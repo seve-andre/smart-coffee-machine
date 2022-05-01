@@ -10,11 +10,11 @@ void setup() {
   sched.init(10);
 
   Task* pirTask = new DetectPresenceTask();
-  pirTask->init(50);
+  pirTask->init(10);
   sched.addTask(pirTask);
 
   Task* sonarTask = new DetectDrinkTakenTask();
-  sonarTask->init(60);
+  sonarTask->init(30);
   sched.addTask(sonarTask);
 }
 

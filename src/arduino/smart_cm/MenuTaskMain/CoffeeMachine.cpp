@@ -44,11 +44,12 @@ void CoffeeMachine::startWorking() {
       drinkFactory->makeDrink(menuSelector->getSelected());
     break;
     case TAKE_DRINK:
-      drinkFactory->drinkReadyMessage(menuSelector->getSelected());
+      // Inserito il drinkMessage in MAKE_DRINK perchè altrimenti interferisce sui valori di Sonar
       isSonarActive = true;
     break;
     case DRINK_TAKED:
-      Serial.println("user takes the drink");
+      isSonarActive = false;
+      //drinkFactory->resetServoTo0();
     break;
   }
 }
@@ -65,6 +66,10 @@ void CoffeeMachine::doState() {
     case SLEEP:
     break;
   }
+}
+
+void CoffeeMachine::resetServo() {
+  drinkFactory->resetServoTo0();
 }
 
 void CoffeeMachine::goToState(WorkingState newState) {

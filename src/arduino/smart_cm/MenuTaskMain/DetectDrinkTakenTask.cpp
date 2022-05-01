@@ -15,6 +15,7 @@ void DetectDrinkTakenTask::tick() {
   if (isSonarActive) {
     if (proximitySensor->isDrinkTaken()) {
       Serial.println("DRINK_TAKED");
+      CoffeeMachine::resetServo();
       CoffeeMachine::goToState(WorkingState::DRINK_TAKED);
       isSonarActive = false;
     } else {

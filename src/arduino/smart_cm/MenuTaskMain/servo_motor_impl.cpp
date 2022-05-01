@@ -68,16 +68,18 @@ void ServoMotorImpl::resetServo() {
 void ServoMotorImpl::moveServoTo0() {
   pos = 0;
   this->setPosition(pos);
+  delay(1000);
+  this->off();
 }
 
 //Timer per fine rotazione a 180° di Servo
 void ServoMotorImpl::stopServo() {  
   //Interrupt
   if ((millis() - tStop) >= 10000) {
-      this->off();
-      tStop = millis();
-      Serial.println("Tempo Finito");
-      CoffeeMachine::goToState(WorkingState::TAKE_DRINK);
+    tStop = millis();
+    Serial.println("Tempo Finito");
+    CoffeeMachine::goToState(WorkingState::TAKE_DRINK);
+    //drinkFactory->drinkReadyMessage(menuSelector->getSelected());
   }
 }
 

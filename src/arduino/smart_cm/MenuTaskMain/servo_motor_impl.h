@@ -15,12 +15,12 @@ public:
   void timerServo();    
   void startServoTimers();
   void setPosition(int angle);
+  void moveServoTo0();
   
 private:
   void on();
   void off();
   void moveServoTo180();
-  void moveServoTo0();
   unsigned int pin;
   unsigned int pos; 
   ServoTimer2 motor;

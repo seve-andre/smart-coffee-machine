@@ -38,6 +38,10 @@ void DrinkFactory::initializeServoTimer() {
   }
 }
 
+void DrinkFactory::resetServoTo0() {
+  myServo->resetServo();
+}
+
 ////////////////////////////////////////////////
 //
 

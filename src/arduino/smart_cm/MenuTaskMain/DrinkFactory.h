@@ -10,6 +10,7 @@ class DrinkFactory {
     void makeDrink(Drink::Type drinkType);
     void drinkMakingMessage(Drink::Type drinkType);
     void drinkReadyMessage(Drink::Type drinkType);
+    void resetServoTo0();
     Drink* printReadyDrink() {
       
     }
