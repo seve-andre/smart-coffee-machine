@@ -1,12 +1,9 @@
 #include "Sonar.h"
 #include "Arduino.h"
 
-Sonar::Sonar(int echoPort, int trigPort) {
-  this->echoPort = echoPort;
-  this->trigPort = trigPort;
-  
+Sonar::Sonar() {  
   pinMode(trigPort, OUTPUT);
-  pinMode(echoPort, INPUT);  
+  pinMode(echoPort, INPUT);
 }
 
 float Sonar::getSoundSpeed() {
@@ -30,9 +27,27 @@ float Sonar::getDistance() {
 
     delay(50);
 
+    //controllo valori di jitter
     if (d < 0.04 || d > 10.0) {
       d = 0.00;
     }
-        
+    
     return d;
+}
+
+void Sonar::initializeTimer() {
+  this->timerTimeOut = millis();
+}
+
+void Sonar::timeTimeout() {
+  static unsigned long dt;
+
+  dt = millis() - timerTimeOut;
+
+  //Interrupt
+  if (dt >= Ttimeout || isDrinkTaken()) {
+      Serial.println("machine goes on");
+      timerTimeOut = millis();
+      //Andare in un altro Stato
+  }
 }

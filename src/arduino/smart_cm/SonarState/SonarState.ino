@@ -1,31 +1,24 @@
 #include "Sonar.h"
+#include "Scheduler.h"
+#include "DetectDrinkTakenTask.h"
 
-Sonar* proximitySensor;
-
-const int triggerPort = 10;
-const int echoPort = 11;
-unsigned long Ttimeout;
+Scheduler sched;
 
 void setup() {
-  Ttimeout = millis();
   Serial.begin(9600);
-  proximitySensor = new Sonar(echoPort, triggerPort);
+  sched.init(10);
+
+  Task* sonarTask = new DetectDrinkTakenTask();
+  sonarTask->init(10);
+  sonarTask->setActive(true);
+  sched.addTask(sonarTask);
 }
 
 void loop() {
-  Serial.println(proximitySensor->getDistance());    
-  // Serial.println(String("dist: ") + d+ "|");
-  timeTimeout();
-}
-
-void timeTimeout() {
-  static unsigned long dt;
-
-  dt = millis() - Ttimeout;
-
-  //Interrupt
-  if (dt >= 5000 || proximitySensor->isDrinkTaken()) {
-      Serial.println("machine goes on");
-      Ttimeout = millis();
-  }
+  sched.schedule();
+  
+  //-----
+  //Serial.println(proximitySensor->isDrinkTaken());    
+  //Serial.println(String("dist: ") + d+ "|");
+  //timeTimeout();
 }
