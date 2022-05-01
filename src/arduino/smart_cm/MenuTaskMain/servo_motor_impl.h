@@ -13,7 +13,7 @@ public:
   void resetServo();
   void stopServo();
   void timerServo();    
-  void startServoTimer();
+  void startServoTimers();
   void setPosition(int angle);
 private:
   void on();
