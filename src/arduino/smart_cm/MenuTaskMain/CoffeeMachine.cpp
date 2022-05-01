@@ -9,7 +9,6 @@
 MachineState machineState;
 MenuSelector* menuSelector;
 WorkingState workingState;
-//ServoMotorImpl* myServo;
 DrinkFactory* drinkFactory;
 int pos = 0;
 bool activeServoCoffeeMachine;
@@ -20,11 +19,9 @@ CoffeeMachine::CoffeeMachine() {
   machineState = MachineState::WORKING;
   menuSelector = new MenuSelector();
   workingState = WorkingState::MENU_SELECTION;
-  //myServo = new ServoMotorImpl(3);
   activeServoCoffeeMachine = false;
   tServoCoffeeMachine = millis();
 }
-
 
 void CoffeeMachine::startWorking() {
   switch (workingState) {
@@ -45,6 +42,7 @@ void CoffeeMachine::startWorking() {
     break;
     case TAKE_DRINK:
       drinkFactory->drinkReadyMessage(menuSelector->getSelected());
+      
     break;
   }
 }
@@ -73,37 +71,3 @@ void CoffeeMachine::goToSleep() {
 void CoffeeMachine::doSelfTest() {
   
 }
-
-////Da capire perchè se inserito in un altra classe il timer si incasina e non va
-//void CoffeeMachine::doMake() {
-//  moveServoTo180CoffeeMachine();
-//  //stopServo();
-//  timerServoCoffeeMachine();
-//}
-//
-//void CoffeeMachine::moveServoTo180CoffeeMachine() {
-//  if (pos < 180 && activeServoCoffeeMachine) {
-//    activeServoCoffeeMachine = false;                       // tell servo to go to position in variable 'pos'
-//    
-//    noInterrupts();
-//    pos += 3;
-//    interrupts();
-//    
-//    myServo->setPosition(pos);
-//    Serial.println(pos);
-//    delay(15);                                // waits 90ms for the servo to reach the position
-//  } else if(pos >= 180) {
-//    CoffeeMachine::goToState(WorkingState::TAKE_DRINK);
-//    //DrinkFactory::printReadyDrink();
-//  }
-//}
-//
-////Timer per tick di Servo
-//void CoffeeMachine::timerServoCoffeeMachine() {  
-//  //Interrupt
-//  if ((millis() - tServoCoffeeMachine) >= 165) {
-//      Serial.println("active servo");
-//      tServoCoffeeMachine = millis();
-//      activeServoCoffeeMachine = true;
-//  }
-//}
