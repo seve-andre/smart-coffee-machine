@@ -8,9 +8,14 @@ class DrinkFactory {
     DrinkFactory();
     void initializeServoTimer();
     void makeDrink(Drink::Type drinkType);
-    //Drink* printReadyDrink();
+    void drinkMakingMessage(Drink::Type drinkType);
+    void drinkReadyMessage(Drink::Type drinkType);
+    Drink* printReadyDrink() {
+      
+    }
 
   private:
+    char* drinkFromType(Drink::Type drinkType);
     bool isFirstInitializationServoTimer;
 };
 
