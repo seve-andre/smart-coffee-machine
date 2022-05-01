@@ -32,6 +32,6 @@ void DrinkFactory::makeDrink(Drink::Type drinkType) {
 void DrinkFactory::initializeServoTimer() {
   if (!isFirstInitializationServoTimer) {
     isFirstInitializationServoTimer = true;
-    myServo->startServoTimer();
+    myServo->startServoTimers();
   }
 }
