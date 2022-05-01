@@ -5,7 +5,8 @@ class CoffeeMachine {
   private:
     void startWorking();
     void goToSleep();
-    void doSelfTest();    
+    void doSelfTest();
+    void printMessage(char msgToSend[]); 
   public:
     CoffeeMachine();
     void doState();

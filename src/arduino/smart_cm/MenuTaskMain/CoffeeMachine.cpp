@@ -25,12 +25,12 @@ CoffeeMachine::CoffeeMachine() {
   tServoCoffeeMachine = millis();
 }
 
+
 void CoffeeMachine::startWorking() {
   switch (workingState) {
     case WELCOME:
     break;
     case READY:
-      Serial.println("in ready");
     break;
     case WAIT_FOR_BUTTON_INPUT:
     break;
@@ -39,12 +39,12 @@ void CoffeeMachine::startWorking() {
       menuSelector->returnToReadyState();
     break;
     case MAKE_DRINK:
-      //Serial.println("Make Drink");
+      drinkFactory->drinkMakingMessage(menuSelector->getSelected());
       drinkFactory->initializeServoTimer();
       drinkFactory->makeDrink(menuSelector->getSelected());
     break;
     case TAKE_DRINK:
-      //DrinkPrinter::
+      drinkFactory->drinkReadyMessage(menuSelector->getSelected());
     break;
   }
 }

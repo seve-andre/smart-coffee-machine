@@ -15,6 +15,7 @@ public:
   void timerServo();    
   void startServoTimers();
   void setPosition(int angle);
+  
 private:
   void on();
   void off();

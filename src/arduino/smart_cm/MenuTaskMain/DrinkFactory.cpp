@@ -3,10 +3,12 @@
 #include "Tea.cpp"
 #include "Coffee.cpp"
 #include "Chocolate.cpp"
+#include "Lcd.h"
 #include "servo_motor_impl.h"
 
 ServoMotorImpl* myServo;
 Drink* drinkElement;
+char drinkMessage[10];
 
 DrinkFactory::DrinkFactory() {
   myServo = new ServoMotorImpl(3);
@@ -38,32 +40,63 @@ void DrinkFactory::initializeServoTimer() {
 
 ////////////////////////////////////////////////
 //
-//void DrinkPrinter::drinkMakingMessage(Drink::Type drinkType) {
-//  char drinkMessage[100] = { drinkFromType(drinkType) };
-//  Lcd::getInstance()->print((String("making a ") + drinkMessage + String("...")).c_str ());
-//}
-//
-//void DrinkPrinter::drinkReadyMessage(Drink::Type drinkType) {
-//  char drinkMessage[100] = { drinkFromType(drinkType) };
-//  Lcd::getInstance()->print((String("The ") + drinkMessage + String(" is ready.")).c_str ());
-//}
-//
-//char* DrinkPrinter::drinkFromType(Drink::Type drinkType) {
-//  char drinkMessage[10];
-//  
-//  switch (drinkType) {
-//    case Drink::Coffee:
-//      strcpy(drinkMessage, "Coffee");
-//    break;
-//    
-//    case Drink::Tea:
-//      strcpy(drinkMessage, "Tea");
-//    break;
-//    
-//    case Drink::Chocolate:
-//      strcpy(drinkMessage, "Chocolate");
-//    break;
-//  }
-//
-//  return drinkMessage;
-//}
+
+void DrinkFactory::drinkMakingMessage(Drink::Type drinkType) {
+  char drinkMessage[100];
+
+  switch (drinkType) {
+    case Drink::Coffee:
+      strcpy(drinkMessage, "Coffee");
+    break;
+    
+    case Drink::Tea:
+      strcpy(drinkMessage, "Tea");
+    break;
+    
+    case Drink::Chocolate:
+      strcpy(drinkMessage, "Chocolate");
+    break;
+  }
+  
+  Lcd::getInstance()->print((String("making a ") + drinkMessage + String("...")).c_str ());
+}
+
+void DrinkFactory::drinkReadyMessage(Drink::Type drinkType) {
+  char drinkMessage[100];
+
+  switch (drinkType) {
+    case Drink::Coffee:
+      strcpy(drinkMessage, "Coffee");
+    break;
+    
+    case Drink::Tea:
+      strcpy(drinkMessage, "Tea");
+    break;
+    
+    case Drink::Chocolate:
+      strcpy(drinkMessage, "Chocolate");
+    break;
+  }
+  
+  Lcd::getInstance()->print((String("The ") + (String) drinkMessage + String(" is ready.")).c_str ());
+  Serial.println(drinkMessage);
+}
+
+
+char* DrinkFactory::drinkFromType(Drink::Type drinkType) {
+  switch (drinkType) {
+    case Drink::Coffee:
+      return "Coffee";
+    break;
+    
+    case Drink::Tea:
+      return "Tea";
+    break;
+    
+    case Drink::Chocolate:
+      return "Chocolate";
+    break;
+  }
+
+  return drinkMessage;
+}
