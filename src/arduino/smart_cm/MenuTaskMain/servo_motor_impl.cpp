@@ -14,7 +14,7 @@ ServoMotorImpl::ServoMotorImpl(unsigned int pin){
   this->pin = pin;  
   pos = 0;
   this->on();  // attaches the servo on pin 3 to the servo object
-  tStop = millis();
+  //tStop = millis();
   activeServo = false;
 } 
 
@@ -44,25 +44,20 @@ void ServoMotorImpl::startServo() {
 
 // goes from 0 degrees to 180 degrees
 void ServoMotorImpl::moveServoTo180() {
-  if (pos < 180) { //&& activeServo) {
+  if (pos < 180 && activeServo) {
     activeServo = false;                       // tell servo to go to position in variable 'pos'
     noInterrupts();
     pos += 3;
     this->setPosition(pos);
     interrupts();
     Serial.println(pos);
-    delay(165);
-    //delay(15);                                // waits 90ms for the servo to reach the position
-  } else if(pos >= 180) {
-    CoffeeMachine::goToState(WorkingState::TAKE_DRINK);
-    //DrinkFactory::printReadyDrink();
+    delay(25);                                // waits 90ms for the servo to reach the position
   }
 }
 
-void ServoMotorImpl::startServoTimer() {
-  noInterrupts();
+void ServoMotorImpl::startServoTimers() {
   tServo = millis();
-  interrupts();
+  tStop = millis();
 }
 
 void ServoMotorImpl::resetServo() {
@@ -72,10 +67,8 @@ void ServoMotorImpl::resetServo() {
 // goes from 180 degrees to 0 degrees
 void ServoMotorImpl::moveServoTo0() {
   pos = 0;
-  
   this->setPosition(pos);
 }
-
 
 //Timer per fine rotazione a 180° di Servo
 void ServoMotorImpl::stopServo() {  
@@ -84,14 +77,14 @@ void ServoMotorImpl::stopServo() {
       this->off();
       tStop = millis();
       Serial.println("Tempo Finito");
+      CoffeeMachine::goToState(WorkingState::TAKE_DRINK);
   }
 }
-
 
 //Timer per tick di Servo
 void ServoMotorImpl::timerServo() {  
   //Interrupt
-  if ((millis() - tServo) >= 165) {
+  if ((millis() - tServo) >= 150) {
       Serial.println("active servo");
       tServo = millis();
       activeServo = true;
