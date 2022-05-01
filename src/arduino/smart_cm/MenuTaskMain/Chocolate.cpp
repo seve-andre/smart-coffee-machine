@@ -2,7 +2,6 @@
 
 class Chocolate: public Drink {
   public:
-    void printDrink() {
-      printMessage("chocolate");
+    Chocolate(int id) : Drink(id) {
     }
 };
