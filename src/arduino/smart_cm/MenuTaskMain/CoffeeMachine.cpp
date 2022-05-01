@@ -4,12 +4,15 @@
 #include "MenuSelector.h"
 #include "WorkingState.h"
 #include "DrinkFactory.h"
+#include "DetectDrinkTakenTask.h"
+#include "Scheduler.h"
 #include "servo_motor_impl.h"
 
 MachineState machineState;
 MenuSelector* menuSelector;
 WorkingState workingState;
 DrinkFactory* drinkFactory;
+
 int pos = 0;
 bool activeServoCoffeeMachine;
 unsigned long tServoCoffeeMachine;
@@ -42,7 +45,10 @@ void CoffeeMachine::startWorking() {
     break;
     case TAKE_DRINK:
       drinkFactory->drinkReadyMessage(menuSelector->getSelected());
-      
+      isSonarActive = true;
+    break;
+    case DRINK_TAKED:
+      Serial.println("user takes the drink");
     break;
   }
 }

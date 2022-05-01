@@ -16,9 +16,4 @@ void setup() {
 
 void loop() {
   sched.schedule();
-  
-  //-----
-  //Serial.println(proximitySensor->isDrinkTaken());    
-  //Serial.println(String("dist: ") + d+ "|");
-  //timeTimeout();
 }

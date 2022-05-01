@@ -1,6 +1,7 @@
 #include "Scheduler.h"
 #include "Task.h"
 #include "DetectPresenceTask.h"
+#include "DetectDrinkTakenTask.h"
 
 Scheduler sched;
 
@@ -11,6 +12,10 @@ void setup() {
   Task* pirTask = new DetectPresenceTask();
   pirTask->init(50);
   sched.addTask(pirTask);
+
+  Task* sonarTask = new DetectDrinkTakenTask();
+  sonarTask->init(60);
+  sched.addTask(sonarTask);
 }
 
 void loop() {

@@ -7,7 +7,8 @@ enum WorkingState {
   WAIT_FOR_BUTTON_INPUT,
   MENU_SELECTION,
   MAKE_DRINK,
-  TAKE_DRINK
+  TAKE_DRINK,
+  DRINK_TAKED
 };
 
 #endif
