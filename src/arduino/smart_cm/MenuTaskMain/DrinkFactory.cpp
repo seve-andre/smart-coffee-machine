@@ -15,16 +15,16 @@ DrinkFactory::DrinkFactory() {
 
 void DrinkFactory::makeDrink(Drink::Type drinkType) {   
   myServo->startServo();
-   
+ 
   switch(drinkType) {
     case Drink::Type::Tea:
-      drinkElement = new Tea();
+      drinkElement = new Tea(0);
       break;
     case Drink::Type::Coffee:
-      drinkElement = new Coffee();
+      drinkElement = new Coffee(1);
       break;
     case Drink::Type::Chocolate:
-      drinkElement = new Chocolate();
+      drinkElement = new Chocolate(2);
       break;
   }
 }
@@ -35,3 +35,35 @@ void DrinkFactory::initializeServoTimer() {
     myServo->startServoTimers();
   }
 }
+
+////////////////////////////////////////////////
+//
+//void DrinkPrinter::drinkMakingMessage(Drink::Type drinkType) {
+//  char drinkMessage[100] = { drinkFromType(drinkType) };
+//  Lcd::getInstance()->print((String("making a ") + drinkMessage + String("...")).c_str ());
+//}
+//
+//void DrinkPrinter::drinkReadyMessage(Drink::Type drinkType) {
+//  char drinkMessage[100] = { drinkFromType(drinkType) };
+//  Lcd::getInstance()->print((String("The ") + drinkMessage + String(" is ready.")).c_str ());
+//}
+//
+//char* DrinkPrinter::drinkFromType(Drink::Type drinkType) {
+//  char drinkMessage[10];
+//  
+//  switch (drinkType) {
+//    case Drink::Coffee:
+//      strcpy(drinkMessage, "Coffee");
+//    break;
+//    
+//    case Drink::Tea:
+//      strcpy(drinkMessage, "Tea");
+//    break;
+//    
+//    case Drink::Chocolate:
+//      strcpy(drinkMessage, "Chocolate");
+//    break;
+//  }
+//
+//  return drinkMessage;
+//}
