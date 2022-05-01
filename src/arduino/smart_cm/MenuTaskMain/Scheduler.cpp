@@ -1,8 +1,18 @@
 #include "Scheduler.h"
+#include <TimerOne.h>
+
+volatile bool timerFlag;
+
+void timerHandler(void){
+  timerFlag = true;
+}
 
 void Scheduler::init(int basePeriod){
   this->basePeriod = basePeriod;
-  timer.setupPeriod(basePeriod);  
+  timerFlag = false;
+  long period = 1000l*basePeriod;
+  Timer1.initialize(period);
+  Timer1.attachInterrupt(timerHandler);
   nTasks = 0;
 }
 
@@ -15,11 +25,11 @@ bool Scheduler::addTask(Task* task){
     return false; 
   }
 }
+  
+void Scheduler::schedule(){   
+  while (!timerFlag){}
+  timerFlag = false;
 
-
-
-void Scheduler::schedule(){
-  timer.waitForNextTick();
   for (int i = 0; i < nTasks; i++){
     if (taskList[i]->isActive() && taskList[i]->updateAndCheckTime(basePeriod)){
       taskList[i]->tick();

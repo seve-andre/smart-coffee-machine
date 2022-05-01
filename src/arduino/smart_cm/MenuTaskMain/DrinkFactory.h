@@ -5,7 +5,13 @@
 
 class DrinkFactory {
   public:
-    static Drink* makeDrink(Drink::Type drinkType);
+    DrinkFactory();
+    void initializeServoTimer();
+    void makeDrink(Drink::Type drinkType);
+    //Drink* printReadyDrink();
+
+  private:
+    bool isFirstInitializationServoTimer;
 };
 
 #endif

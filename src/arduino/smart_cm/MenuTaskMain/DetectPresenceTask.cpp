@@ -1,4 +1,3 @@
-#include "Timer.h"
 #include "DetectPresenceTask.h"
 #include "Pir.h"
 #include "Arduino.h"
@@ -24,14 +23,14 @@ bool userDetected;
 //  Serial.println("Arduino ATTIVO");
 //}
 //
-////Arduino si risveglia
+//Arduino si risveglia
 //void wakeUpNow() {
 //  sleep_disable();
 //  Tidle = millis();
 //  Serial.println("SLEEP_MODE_OFF");
 //}
 //
-////Arduino va in sleep-mode
+//Arduino va in sleep-mode
 //void sleepNow() {
 //  Serial.println("SLEEP_MODE_ON");
 //  set_sleep_mode(SLEEP_MODE_PWR_DOWN);
@@ -39,7 +38,7 @@ bool userDetected;
 //  sleep_mode();
 //}
 //
-////vai in pausa dopo 5s di attesa.
+//vai in pausa dopo 5s di attesa.
 //void timeBeforePause() {
 //  static unsigned long dt; 
 //  int ret = 0;

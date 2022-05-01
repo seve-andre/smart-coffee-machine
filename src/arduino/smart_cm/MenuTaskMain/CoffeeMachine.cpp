@@ -3,18 +3,22 @@
 #include "Arduino.h"
 #include "MenuSelector.h"
 #include "WorkingState.h"
-#include "DrinkMaker.h"
+#include "DrinkFactory.h"
+#include "servo_motor_impl.h"
 
 MachineState machineState;
 MenuSelector* menuSelector;
-DrinkMaker* drinkMake;
 WorkingState workingState;
+//ServoMotorImpl* myServo;
+DrinkFactory* drinkFactory;
+int pos = 0;
 
 CoffeeMachine::CoffeeMachine() {
+  drinkFactory = new DrinkFactory();
   machineState = MachineState::WORKING;
   menuSelector = new MenuSelector();
-  drinkMake = new DrinkMaker();
   workingState = WorkingState::MENU_SELECTION;
+  //myServo = new ServoMotorImpl(3);
 }
 
 void CoffeeMachine::startWorking() {
@@ -31,7 +35,15 @@ void CoffeeMachine::startWorking() {
       menuSelector->returnToReadyState();
     break;
     case MAKE_DRINK:
-      drinkMake->prepareDrink(menuSelector->getSelected());
+      //Serial.println("Make Drink");
+      drinkFactory->initializeServoTimer();
+      drinkFactory->makeDrink(menuSelector->getSelected());
+      //myServo->setPosition(180);
+      //myServo->setPosition(0);
+      //myServo->startServo();
+      //myServo->setPosition(pos);
+      //pos+=3;
+
     break;
     case TAKE_DRINK:
       Serial.println("Take Drink");
