@@ -10,7 +10,6 @@ void setup() {
 
   Task* sonarTask = new DetectDrinkTakenTask();
   sonarTask->init(2000);
-  sonarTask->setActive(true);
   sched.addTask(sonarTask);
 }
 
