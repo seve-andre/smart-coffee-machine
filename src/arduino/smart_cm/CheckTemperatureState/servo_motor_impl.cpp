@@ -2,6 +2,8 @@
 #include "Arduino.h"
 
 bool activeServo;
+bool servoFinish;
+
 unsigned int contCycle;
 unsigned int n_drink;
 unsigned long tStop;
@@ -12,10 +14,13 @@ ServoMotorImpl::ServoMotorImpl(unsigned int pin) {
   pos = 0;
   this->on();  // attaches the servo on pin 3 to the servo object
   activeServo = false;
+  servoFinish = false;
 } 
 
 void ServoMotorImpl::on(){
   motor.attach(pin);    
+  startServoTo180 = true;
+  this->setPosition(0);
 }
 
 void ServoMotorImpl::setPosition(int angle){
@@ -33,7 +38,13 @@ void ServoMotorImpl::off(){
 
 //Simulate the drink out
 void ServoMotorImpl::startServo() {
-  moveServoTo180();
+
+  if (startServoTo180) {
+    moveServoTo180();
+  } else {
+    moveServoTo0();
+  }
+  
   stopServo();
   timerServo();
 }
@@ -42,12 +53,16 @@ void ServoMotorImpl::startServo() {
 void ServoMotorImpl::moveServoTo180() {
   if (pos < 180 && activeServo) {
     activeServo = false;                       // tell servo to go to position in variable 'pos'
+    
     noInterrupts();
     pos += 6;
-    this->setPosition(pos);
     interrupts();
+    
+    this->setPosition(pos);
     Serial.println(pos);
-    //delay(25);                                // waits 90ms for the servo to reach the position
+    //delay(15);                                // waits 90ms for the servo to reach the position
+  } else if (pos >= 180) {
+    startServoTo180 = false;
   }
 }
 
@@ -61,29 +76,42 @@ void ServoMotorImpl::resetServo() {
 }
 
 // goes from 180 degrees to 0 degrees
-void ServoMotorImpl::moveServoTo0() {
-  pos = 0;
-  this->setPosition(pos);
-  //delay(1000);
-  this->off();
+void ServoMotorImpl::moveServoTo0() {  
+  if (pos > 0 && activeServo) {
+    activeServo = false;                       // tell servo to go to position in variable 'pos'
+    
+    noInterrupts();
+    pos -= 6;
+    interrupts();
+    
+    this->setPosition(pos);
+    Serial.println(pos);
+    //delay(15);                                // waits 90ms for the servo to reach the position
+  } else if (pos <= 0) {
+    servoFinish = true;
+    Serial.println("Servo is done");
+    this->off();
+  }
 }
 
 //Timer per fine rotazione a 180° di Servo
 void ServoMotorImpl::stopServo() {  
   //Interrupt
-  if ((millis() - tStop) >= 60000) {
+  if ((millis() - tStop) >= 180000) {
     tStop = millis();
-    Serial.println("Tempo Finito");
-    this->off();
   }
 }
 
 //Timer per tick di Servo
 void ServoMotorImpl::timerServo() {  
   //Interrupt
-  if ((millis() - tServo) >= 1000) {
+  if ((millis() - tServo) >= 3050) {
     Serial.println("active servo");
     tServo = millis();
     activeServo = true;
   }
+}
+
+bool ServoMotorImpl::isServoFinish() {
+  return servoFinish;
 }
