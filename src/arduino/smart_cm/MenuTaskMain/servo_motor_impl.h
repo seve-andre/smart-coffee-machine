@@ -16,6 +16,7 @@ public:
   void startServoTimers();
   void setPosition(int angle);
   void moveServoTo0();
+  bool isServoFinish();
   
 private:
   void on();
@@ -23,6 +24,8 @@ private:
   void moveServoTo180();
   unsigned int pin;
   unsigned int pos; 
+  bool startServoTo180;
+  bool servoFinish;
   ServoTimer2 motor;
 };
 
