@@ -8,10 +8,11 @@ DetectDrinkTakenTask::DetectDrinkTakenTask() {
 }
 
 void DetectDrinkTakenTask::tick() {
+  Serial.println(proximitySensor->getDistance());
   if (proximitySensor->isDrinkTaken()) {
-    Serial.println("DRINK_TAKED");
+    //Serial.println("DRINK_TAKED");
   } else {
-    Serial.println("DRINK_NOT_TAKED");
+    //Serial.println("DRINK_NOT_TAKED");
   }
   checkTimeTimeout();
 }

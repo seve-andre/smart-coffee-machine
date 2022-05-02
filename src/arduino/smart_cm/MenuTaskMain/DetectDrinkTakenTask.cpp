@@ -19,7 +19,6 @@ void DetectDrinkTakenTask::tick() {
       CoffeeMachine::goToState(WorkingState::DRINK_TAKED);
       isSonarActive = false;
     } else {
-      //Serial.println("DRINK_NOT_TAKED");
       Serial.println(proximitySensor->getDistance());
     }
     checkTimeTimeout();

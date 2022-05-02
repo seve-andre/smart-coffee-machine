@@ -78,6 +78,7 @@ void ServoMotorImpl::stopServo() {
   if ((millis() - tStop) >= 10000) {
     tStop = millis();
     Serial.println("Tempo Finito");
+    this->off();
     CoffeeMachine::goToState(WorkingState::TAKE_DRINK);
     //drinkFactory->drinkReadyMessage(menuSelector->getSelected());
   }
