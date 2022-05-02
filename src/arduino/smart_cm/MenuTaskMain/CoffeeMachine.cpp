@@ -44,7 +44,9 @@ void CoffeeMachine::startWorking() {
       drinkFactory->makeDrink(menuSelector->getSelected());
     break;
     case TAKE_DRINK:
-      // Inserito il drinkMessage in MAKE_DRINK perchè altrimenti interferisce sui valori di Sonar
+      drinkFactory->drinkReadyMessage(menuSelector->getSelected());
+      // Inserito il drinkMessage in MAKE_DRINK perchè altrimenti interferisce sui valori di Sonar,
+      // Da capire perchè Sonar non funziona all'avvio
       isSonarActive = true;
     break;
     case DRINK_TAKED:
