@@ -13,9 +13,8 @@ class TemperatureTask : public Task {
     void stopServo();
     void tick();
     void checkTimeTimeout();
-    bool checkTemperatureRange();
-
-    ServoMotorImpl* myServo;
+    bool isTemperatureInRange();
+    void timerAdjust();
 };
 
 #endif

@@ -2,6 +2,7 @@
 #include "TempSensorImpl.h"
 
 TempSensor* tempSensor;
+ServoMotorImpl* myServo;
 
 TemperatureTask::TemperatureTask() {
   tempSensor = new TempSensorLM35(0);
@@ -12,17 +13,18 @@ void TemperatureTask::moveServo() {
   myServo->startServo();
 }
 
-void TemperatureTask::tick() {
-  if (!myServo->isServoFinish()) {
-    moveServo();
-  } else {
-    if (checkTemperatureRange()) {
-      //Serial.println("cambio stato");
-      //lcd.print("Assistance Required");
-    }
+void TemperatureTask::tick() {  
+  Serial.println(tempSensor->getTemperature());
+  moveServo();
+  
+  if (!isTemperatureInRange()) {
+    Serial.println("cambio stato");
   }
 }
 
-bool TemperatureTask::checkTemperatureRange() {
-  return (tempSensor->getTemperature() < 17.0 || tempSensor->getTemperature() >= 24.0);
+bool TemperatureTask::isTemperatureInRange() {
+  float temp = tempSensor->getTemperature();
+  Serial.println(temp);
+  
+  return (temp > 17.0 && temp < 24.0);
 }
