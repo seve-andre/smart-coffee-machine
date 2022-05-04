@@ -36,7 +36,7 @@ float Sonar::getDistance() {
 }
 
 void Sonar::initializeTimer() {
-  this->timerTimeOut = millis();
+  timerTimeOut = millis();
 }
 
 void Sonar::timeTimeout() {
@@ -49,5 +49,6 @@ void Sonar::timeTimeout() {
       Serial.println("machine goes on");
       timerTimeOut = millis();
       //Andare in un altro Stato
+      CoffeeMachine::goToWorkingState(DRINK_TAKEN);
   }
 }

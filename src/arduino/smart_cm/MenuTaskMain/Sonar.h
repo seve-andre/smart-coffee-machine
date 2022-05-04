@@ -5,6 +5,8 @@
 #define OBJ_DETECTED 1
 #define MAX_DISTANCE 0.41
 
+#include "CoffeeMachine.h"
+
 class Sonar {
 
 public:  
