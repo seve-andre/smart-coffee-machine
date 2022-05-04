@@ -3,16 +3,18 @@
 #include "Drink.h"
 #include "ButtonImpl.h"
 #include "CoffeeMachine.h"
+#include "BeverageStore.h"
 #include "Lcd.h"
+#include "Pot.h"
 
-ButtonImpl* btnUp;
-ButtonImpl* btnDown;
-ButtonImpl* btnMake;
+Potentiometer* potSugar;
 
 unsigned long timerIdle;
 
 bool btnUpClick;
 bool btnDownClick;
+
+BeverageStore* beverages;
 Lcd* lcd;
 
 Drink::Type drinks[3] = {
@@ -22,6 +24,9 @@ Drink::Type drinks[3] = {
 };
 
 MenuSelector::MenuSelector() {
+  beverages = new BeverageStore(1,1,0);
+  potSugar = new Potentiometer(2);
+  
   btnUp = new ButtonImpl(4);
   btnDown = new ButtonImpl(5);
   btnMake = new ButtonImpl(6);
@@ -29,6 +34,9 @@ MenuSelector::MenuSelector() {
   lcd = Lcd::getInstance();
   
   this->currentSelection = 0;
+}
+
+void MenuSelector::restartTimerIdle() {
   timerIdle = millis();
 }
 
@@ -52,43 +60,57 @@ Drink::Type MenuSelector::getSelected() {
   return drinks[currentSelection];
 }
 
+bool MenuSelector::drinksAvailable() {
+  return beverages->getQuantity(Drink::Coffee) > 0 
+  || beverages->getQuantity(Drink::Tea) > 0
+  || beverages->getQuantity(Drink::Chocolate) > 0;
+}
+
 void MenuSelector::printSelection() {
-  if (btnDown->isPressed()) {
-    if (!btnDownClick) {
-      btnDownClick = true;
-      moveNext();
+  if (!drinksAvailable()) {
+    CoffeeMachine::goToMachineState(ASSISTANCE);
+    CoffeeMachine::goToWorkingState(READY);
+  } else {
+    delay(50);
+    if (btnDown->isPressed()) {
+      if (!btnDownClick) {
+        btnDownClick = true;
+        moveNext();
+      }
+    } else if (btnUp->isPressed()) {
+      if (!btnUpClick) {
+        btnUpClick = true;
+        movePrev();
+      }
+    } else if (btnMake->isPressed()) {
+      beverages->reduceQuantity(getSelected());
+      CoffeeMachine::goToWorkingState(WorkingState::MAKE_DRINK);
+      return;
+    } else if (!btnDown->isPressed()) {
+      btnDownClick = false;
+    } if (!btnUp->isPressed()) {
+      btnUpClick = false;
     }
-  } else if (btnUp->isPressed()) {
-    if (!btnUpClick) {
-      btnUpClick = true;
-      movePrev();
+  
+    char drinkMessage[10];
+  
+    switch (drinks[currentSelection]) {
+      case Drink::Coffee:
+        strcpy(drinkMessage, "Coffee");
+      break;
+      
+      case Drink::Tea:
+        strcpy(drinkMessage, "Tea");
+      break;
+      
+      case Drink::Chocolate:
+        strcpy(drinkMessage, "Chocolate");
+      break;
     }
-  } else if (btnMake->isPressed()) {
-    CoffeeMachine::goToState(WorkingState::MAKE_DRINK);
-    return;
-  } else if (!btnDown->isPressed()) {
-    btnDownClick = false;
-  } if (!btnUp->isPressed()) {
-    btnUpClick = false;
+  
+    lcd->print(drinkMessage);
+    lcd->printAt(0,3, (String("Sugar level: ") + potSugar->getValue()).c_str());
   }
-
-  char drinkMessage[10];
-
-  switch (drinks[currentSelection]) {
-    case Drink::Coffee:
-      strcpy(drinkMessage, "Coffee");
-    break;
-    
-    case Drink::Tea:
-      strcpy(drinkMessage, "Tea");
-    break;
-    
-    case Drink::Chocolate:
-      strcpy(drinkMessage, "Chocolate");
-    break;
-  }
-
-  lcd->print(drinkMessage);
 }
 
 void MenuSelector::returnToReadyState() {  
@@ -96,6 +118,6 @@ void MenuSelector::returnToReadyState() {
   if ((millis() - timerIdle) >= 5000) { //&& !isAssistanceRequired && readyState == 2) {
       timerIdle = millis();
       lcd->clear();
-      CoffeeMachine::goToState(WorkingState::READY);
+      CoffeeMachine::goToWorkingState(WorkingState::READY);
   }
 }

@@ -15,8 +15,8 @@ DrinkFactory::DrinkFactory() {
   isFirstInitializationServoTimer = false;
 }
 
-void DrinkFactory::makeDrink(Drink::Type drinkType) {   
-  myServo->startServo();
+void DrinkFactory::makeDrink(Drink::Type drinkType) {
+  myServo->startServoMakeDrink();
  
   switch(drinkType) {
     case Drink::Type::Tea:
@@ -34,12 +34,16 @@ void DrinkFactory::makeDrink(Drink::Type drinkType) {
 void DrinkFactory::initializeServoTimer() {
   if (!isFirstInitializationServoTimer) {
     isFirstInitializationServoTimer = true;
-    myServo->startServoTimers();
+    myServo->startServoMakeDrink();
   }
 }
 
 void DrinkFactory::resetServoTo0() {
   myServo->resetServo();
+}
+
+void DrinkFactory::restartServoTimerStop() {
+  myServo->restartTimerStop();
 }
 
 ////////////////////////////////////////////////
@@ -84,6 +88,10 @@ void DrinkFactory::drinkReadyMessage(Drink::Type drinkType) {
   
   Lcd::getInstance()->print((String("The ") + (String) drinkMessage + String(" is ready.")).c_str ());
   Serial.println(drinkMessage);
+}
+
+void DrinkFactory::detachServo() {
+  myServo->off();
 }
 
 

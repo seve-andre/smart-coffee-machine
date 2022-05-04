@@ -10,10 +10,9 @@ class DrinkFactory {
     void makeDrink(Drink::Type drinkType);
     void drinkMakingMessage(Drink::Type drinkType);
     void drinkReadyMessage(Drink::Type drinkType);
+    void restartServoTimerStop();
     void resetServoTo0();
-    Drink* printReadyDrink() {
-      
-    }
+    void detachServo();
 
   private:
     char* drinkFromType(Drink::Type drinkType);

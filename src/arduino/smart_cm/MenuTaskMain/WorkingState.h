@@ -8,7 +8,7 @@ enum WorkingState {
   MENU_SELECTION,
   MAKE_DRINK,
   TAKE_DRINK,
-  DRINK_TAKED
+  DRINK_TAKEN,
 };
 
 #endif

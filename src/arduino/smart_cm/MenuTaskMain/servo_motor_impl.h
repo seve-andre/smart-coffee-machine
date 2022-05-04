@@ -9,22 +9,35 @@ class ServoMotorImpl: public ServoMotor {
 
 public:
   ServoMotorImpl(unsigned int pin);
-  void startServo();
+  void startServoMakeDrink();
+  void startServoSelfTest();
   void resetServo();
+  
   void stopServo();
-  void timerServo();    
+  void timerServo();
+  void stopServoMakeDrink();
+  void restartTimerStop();
+  void stopServoSelfTest();
+  void timerServoMakeDrink();
+  void timerServoSelfTest();
   void startServoTimers();
+  
   void setPosition(int angle);
   void moveServoTo0();
+  void moveServoTo0MakeDrink();
+  void moveServoTo0SelfTest();
   bool isServoFinish();
+  void off();
   
 private:
   void on();
-  void off();
   void moveServoTo180();
+  void moveServoTo180MakeDrink();
+  void moveServoTo180SelfTest();
   unsigned int pin;
   unsigned int pos; 
-  bool startServoTo180;
+  bool startServoTo180MakeDrink;
+  bool startServoTo180SelfTest;
   bool servoFinish;
   ServoTimer2 motor;
 };

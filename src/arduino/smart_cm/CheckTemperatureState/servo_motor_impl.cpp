@@ -49,7 +49,7 @@ void ServoMotorImpl::startServo() {
   timerServo();
 }
 
-// goes from 0 degrees to 180 degrees
+// goes from 0 degrees to 180 degrees and back
 void ServoMotorImpl::moveServoTo180() {
   if (pos < 180 && activeServo) {
     activeServo = false;                       // tell servo to go to position in variable 'pos'
@@ -59,7 +59,7 @@ void ServoMotorImpl::moveServoTo180() {
     interrupts();
     
     this->setPosition(pos);
-    Serial.println(pos);
+    //Serial.println(pos);
     //delay(15);                                // waits 90ms for the servo to reach the position
   } else if (pos >= 180) {
     startServoTo180 = false;
