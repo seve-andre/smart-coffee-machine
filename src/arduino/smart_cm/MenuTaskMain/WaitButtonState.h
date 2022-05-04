@@ -11,11 +11,12 @@ class WaitButtonState {
     WaitButtonState();
     void initButtonsWait();
     void checkButtonsInput();
+    void resetFirstTime();
 
   private:
     ButtonImpl* btnUp;
     ButtonImpl* btnDown;
-    ButtonImpl* btnMake;
+    bool firstTime;
 };
 
 #endif
