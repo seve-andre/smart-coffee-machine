@@ -1,8 +1,9 @@
-#include "servo_motor_impl.h"
+#include "ServoMotorImpl.h"
 #include "Arduino.h"
 #include "DrinkFactory.h"
 #include "ServoTimer2.h"
 #include "CoffeeMachine.h"
+#include "Sonar.h"
 
 bool activeServo;
 unsigned int contCycle;
@@ -38,7 +39,7 @@ void ServoMotorImpl::restartTimerStop() {
   tStop = millis();
 }
 
-//Simulate the drink out
+// Simulate the drink out
 void ServoMotorImpl::startServoMakeDrink() {
   moveServoTo180MakeDrink();
   stopServoMakeDrink();
@@ -89,8 +90,9 @@ void ServoMotorImpl::stopServoMakeDrink() {
   if ((millis() - tStop) >= 10000) {
     tStop = millis();
     Serial.println("Tempo Finito");
+    // init sonar timer
+    // Sonar::initializeTimer();
     CoffeeMachine::goToWorkingState(WorkingState::TAKE_DRINK);
-    //drinkFactory->drinkReadyMessage(menuSelector->getSelected());
   }
 }
 
