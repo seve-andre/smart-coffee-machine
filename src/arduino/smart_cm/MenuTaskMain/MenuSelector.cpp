@@ -13,6 +13,7 @@ unsigned long timerIdle;
 
 bool btnUpClick;
 bool btnDownClick;
+unsigned int sugarLevel;
 
 BeverageStore* beverages;
 Lcd* lcd;
@@ -24,9 +25,11 @@ Drink::Type drinks[3] = {
 };
 
 MenuSelector::MenuSelector() {
-  beverages = new BeverageStore(1,1,0);
+  beverages = new BeverageStore(1, 1, 0);
   potSugar = new Potentiometer(2);
-  
+
+  sugarLevel = 0;
+
   btnUp = new ButtonImpl(4);
   btnDown = new ButtonImpl(5);
   btnMake = new ButtonImpl(6);
@@ -83,15 +86,17 @@ void MenuSelector::printSelection() {
         movePrev();
       }
     } else if (btnMake->isPressed()) {
-      beverages->reduceQuantity(getSelected());
-      CoffeeMachine::goToWorkingState(WorkingState::MAKE_DRINK);
+      if (beverages->getQuantity(getSelected()) > 0) {
+        beverages->reduceQuantity(getSelected());
+        CoffeeMachine::goToWorkingState(WorkingState::MAKE_DRINK);
+      }
       return;
     } else if (!btnDown->isPressed()) {
       btnDownClick = false;
     } if (!btnUp->isPressed()) {
       btnUpClick = false;
     }
-  
+
     char drinkMessage[10];
   
     switch (drinks[currentSelection]) {
@@ -107,15 +112,25 @@ void MenuSelector::printSelection() {
         strcpy(drinkMessage, "Chocolate");
       break;
     }
-  
+
+    unsigned int newSugarLevel = potSugar->getValue();
+    
+    // se l'utente cambia il livello di zucchero mentre è nel menù
+    // resetta il timer di 5 secondi
+    if (newSugarLevel != sugarLevel) {
+      sugarLevel = newSugarLevel;
+      timerIdle = millis();
+    }
+
+    lcd->clear();
     lcd->print(drinkMessage);
-    lcd->printAt(0,3, (String("Sugar level: ") + potSugar->getValue()).c_str());
+    lcd->printAt(0,3, (String("Sugar level: ") + newSugarLevel).c_str());
   }
 }
 
 void MenuSelector::returnToReadyState() {  
   //Interrupt
-  if ((millis() - timerIdle) >= 5000) { //&& !isAssistanceRequired && readyState == 2) {
+  if ((millis() - timerIdle) >= 5000) {
       timerIdle = millis();
       lcd->clear();
       CoffeeMachine::goToWorkingState(WorkingState::READY);
