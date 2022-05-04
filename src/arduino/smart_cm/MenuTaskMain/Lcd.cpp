@@ -10,7 +10,7 @@ Lcd* Lcd::getInstance() {
 }
 
 void Lcd::print(char message[]) {
-  printNewMessageAt(1, 0, message);
+  printNewMessageAt(0, 0, message);
 }
 
 void Lcd::printAt(int n_col, int n_row, char message[]) {
@@ -23,7 +23,6 @@ void Lcd::clear() {
 
 // private - called for internal printing from public methods
 void Lcd::printNewMessageAt(int n_col, int n_row, char message[]) {
-  lcd.clear();
   lcd.setCursor(n_col, n_row);
   lcd.print(message);
 }
