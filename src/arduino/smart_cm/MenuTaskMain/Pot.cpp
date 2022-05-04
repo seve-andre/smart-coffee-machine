@@ -5,7 +5,7 @@ Potentiometer::Potentiometer(int pin){
   this->pin = pin;
 } 
   
-float Potentiometer::getValue(){
+unsigned int Potentiometer::getValue(){
   float val = analogRead(pin);
-  return map(val, 0, 1023, 0, 5);
+  return (unsigned int) map(val, 0, 1023, 0, 5);
 }

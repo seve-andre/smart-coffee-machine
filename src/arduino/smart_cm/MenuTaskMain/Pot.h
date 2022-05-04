@@ -5,8 +5,7 @@ class Potentiometer {
  
 public: 
   Potentiometer(int pin);
-  
-  float getValue();
+  unsigned int getValue();
 
 private:
   int pin;
