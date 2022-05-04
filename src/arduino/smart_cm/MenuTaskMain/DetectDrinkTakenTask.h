@@ -13,7 +13,7 @@ class DetectDrinkTakenTask : public Task {
     void checkTimeTimeout();
     
   private:
-  Sonar* proximitySensor;
+    Sonar* proximitySensor;
 };
 
 #endif
