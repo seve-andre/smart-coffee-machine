@@ -1,7 +1,7 @@
 #ifndef __COFFEE_MACHINE__
 #define __COFFEE_MACHINE__
 
-#include "State.h"
+#include "MachineState.h"
 #include "WorkingState.h";
 
 class CoffeeMachine {

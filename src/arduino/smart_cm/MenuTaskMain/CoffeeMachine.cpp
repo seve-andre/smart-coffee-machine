@@ -3,13 +3,12 @@
 #include "Arduino.h"
 #include "MenuSelector.h"
 #include "WaitButtonState.h"
-#include "WorkingState.h"
 #include "ReadyState.h"
 #include "WelcomeState.h"
 #include "DrinkFactory.h"
 #include "DetectDrinkTakenTask.h"
 #include "Scheduler.h"
-#include "servo_motor_impl.h"
+#include "ServoMotorImpl.h"
 
 #include <avr/sleep.h>
 
@@ -29,7 +28,7 @@ CoffeeMachine::CoffeeMachine() {
   welcomeState = new WelcomeState();
   readyState = new ReadyState();
   waitButtonState = new WaitButtonState();
-  
+
   drinkFactory = new DrinkFactory();
   machineState = MachineState::WORKING;
   menuSelector = new MenuSelector();
@@ -46,7 +45,7 @@ void CoffeeMachine::startWorking() {
       welcomeState->timerWelcomeFinished();
     break;
     case READY:
-      //Serial.println("Ready");
+      waitButtonState->resetFirstTime();
       readyState->readyMessage();
     break;
     case WAIT_FOR_BUTTON_INPUT:
@@ -75,7 +74,7 @@ void CoffeeMachine::startWorking() {
     case DRINK_TAKEN:
       isSonarActive = false;
       drinkFactory->resetServoTo0();
-      workingState = MENU_SELECTION;
+      workingState = READY;
     break;
   }
 }
