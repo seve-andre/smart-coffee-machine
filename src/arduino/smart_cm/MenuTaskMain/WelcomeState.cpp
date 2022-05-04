@@ -14,8 +14,7 @@ WelcomeState::WelcomeState() {
 void WelcomeState::welcomeMessage() {
   if (!tWelcomeStarted) {
     tWelcomeStarted = true;
-    //lcd.setCursor(0,0);
-    //lcd.print("Welcome in Coffee Machine");
+    Lcd::getInstance()->clear();
     Lcd::getInstance()->print("Welcome in Coffee Machine");
     Serial.println("Welcome in Coffee Machine");
     tWelcome = millis();

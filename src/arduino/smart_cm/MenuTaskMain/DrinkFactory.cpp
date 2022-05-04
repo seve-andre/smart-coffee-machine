@@ -4,7 +4,7 @@
 #include "Coffee.cpp"
 #include "Chocolate.cpp"
 #include "Lcd.h"
-#include "servo_motor_impl.h"
+#include "ServoMotorImpl.h"
 
 ServoMotorImpl* myServo;
 Drink* drinkElement;
@@ -65,7 +65,8 @@ void DrinkFactory::drinkMakingMessage(Drink::Type drinkType) {
       strcpy(drinkMessage, "Chocolate");
     break;
   }
-  
+
+  Lcd::getInstance()->clear();
   Lcd::getInstance()->print((String("making a ") + drinkMessage + String("...")).c_str ());
 }
 
@@ -85,7 +86,8 @@ void DrinkFactory::drinkReadyMessage(Drink::Type drinkType) {
       strcpy(drinkMessage, "Chocolate");
     break;
   }
-  
+
+  Lcd::getInstance()->clear();
   Lcd::getInstance()->print((String("The ") + (String) drinkMessage + String(" is ready.")).c_str ());
   Serial.println(drinkMessage);
 }
