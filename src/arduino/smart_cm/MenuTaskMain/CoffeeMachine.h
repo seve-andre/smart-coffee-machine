@@ -11,11 +11,11 @@ class CoffeeMachine {
     void reactivateArduino();
     void doSelfTest();
     void printMessage(char msgToSend[]);
-    WorkingState getState();
     
   public:
     CoffeeMachine();
     void doState();
+    WorkingState getState();
     static void goToWorkingState(WorkingState newState);
     static void goToMachineState(MachineState newMachineState);
     static void resetServo();

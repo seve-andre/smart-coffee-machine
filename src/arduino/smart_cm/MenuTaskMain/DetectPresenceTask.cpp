@@ -7,53 +7,41 @@
 
 unsigned long Tidle;
 bool userDetected;
+bool isInSleep;
 
-//void setup() {
-//  Serial.begin(9600);
-//  pinMode(10, INPUT);
-//
-//  attachPCINT(digitalPinToPCINT(10), wakeUpNow, RISING);
-//}
-//
-//void loop() {
-//  int pir = digitalRead(10);
-//  userDetected = pir;  
-//  
-//  timeBeforePause();
-//  Serial.println("Arduino ATTIVO");
-//}
-//
 //Arduino si risveglia
-//void wakeUpNow() {
-//  sleep_disable();
-//  Tidle = millis();
-//  Serial.println("SLEEP_MODE_OFF");
-//}
-//
-//Arduino va in sleep-mode
-//void sleepNow() {
-//  Serial.println("SLEEP_MODE_ON");
-//  set_sleep_mode(SLEEP_MODE_PWR_DOWN);
-//  sleep_enable();
-//  sleep_mode();
-//}
-//
-//vai in pausa dopo 5s di attesa.
-//void timeBeforePause() {
-//  static unsigned long dt; 
-//  int ret = 0;
-//
-//  dt = millis() - Tidle;
-//
-//  //Interrupt
-//  if (dt >= 60000 && !userDetected) {
-//      Serial.println("user not detected, go to sleep");
-//      Tidle = millis();
-//      sleepNow();
-//  }
-//}
+void wakeUpNow() {
+  if (isInSleep) {
+    sleep_disable();
+    Tidle = millis();
+    Serial.println("SLEEP_MODE_OFF");
+    isInSleep = false;
+  }
+}
 
-//-------------------------------------------------------
+//Arduino va in sleep-mode
+void sleepNow() {
+  Serial.println("SLEEP_MODE_ON");
+  set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+  sleep_enable();
+  sleep_mode();
+  isInSleep = true;
+}
+
+// vai in pausa dopo 5s di attesa.
+void timeBeforePause() {
+  static unsigned long dt;
+
+  dt = millis() - Tidle;
+
+  //Interrupt
+  if (dt >= 60000 && !userDetected) {
+      Serial.println("user not detected, go to sleep");
+      Tidle = millis();
+      delay(2000);
+      sleepNow();
+  }
+}
 
 Pir* presenceSensor;
 CoffeeMachine* coffeeMachine;
@@ -61,6 +49,9 @@ CoffeeMachine* coffeeMachine;
 DetectPresenceTask::DetectPresenceTask() {
   presenceSensor = new Pir(10);
   coffeeMachine = new CoffeeMachine();
+
+  attachPCINT(digitalPinToPCINT(10), wakeUpNow, RISING);
+  isInSleep = false;
 }
 
 bool DetectPresenceTask::isUserDetected() {
@@ -68,10 +59,23 @@ bool DetectPresenceTask::isUserDetected() {
 }
 
 void DetectPresenceTask::tick() {
-  coffeeMachine->doState();
-//  if (isUserDetected()) {
-//    Serial.println("USER_DETECTED");
-//  } else {
-//    Serial.println("USER_NOT_DETECTED");
-//  }
+  int pir = digitalRead(10);
+  userDetected = pir;
+
+  WorkingState currentState = coffeeMachine->getState();
+  if (
+    currentState == MENU_SELECTION
+    || currentState == MAKE_DRINK
+    || currentState == TAKE_DRINK
+    || currentState == DRINK_TAKEN
+  ) {
+    userDetected = true;
+    Tidle = millis();
+  }
+  
+  timeBeforePause();
+
+  if (userDetected) {
+    coffeeMachine->doState();
+  }
 }

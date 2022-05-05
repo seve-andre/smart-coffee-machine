@@ -1,5 +1,6 @@
 #include "Sonar.h"
 #include "Arduino.h"
+#include "Lcd.h"
 
 Sonar::Sonar() {
   pinMode(trigPort, OUTPUT);
@@ -48,6 +49,7 @@ void Sonar::timeTimeout() {
   if (dt >= Ttimeout || isDrinkTaken()) {
       Serial.println("machine goes on");
       timerTimeOut = millis();
+      Lcd::getInstance()->clear();
       //Andare in un altro Stato
       CoffeeMachine::goToWorkingState(DRINK_TAKEN);
   }

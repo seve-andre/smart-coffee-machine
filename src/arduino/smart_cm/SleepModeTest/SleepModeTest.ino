@@ -17,7 +17,7 @@ void loop() {
   userDetected = pir;  
   
   timeBeforePause();
-  Serial.println("Arduino ATTIVO");
+  // Serial.println("Arduino ATTIVO");
 }
 
 //Arduino si risveglia
@@ -43,7 +43,7 @@ void timeBeforePause() {
   dt = millis() - Tidle;
 
   //Interrupt
-  if (dt >= 60000 && !userDetected) {
+  if (dt >= 5000 && !userDetected) {
       Serial.println("user not detected, go to sleep");
       Tidle = millis();
       sleepNow();

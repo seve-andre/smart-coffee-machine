@@ -25,7 +25,7 @@ Drink::Type drinks[3] = {
 };
 
 MenuSelector::MenuSelector() {
-  beverages = new BeverageStore(1, 1, 0);
+  beverages = new BeverageStore(5, 5, 5);
   potSugar = new Potentiometer(2);
 
   sugarLevel = 0;
