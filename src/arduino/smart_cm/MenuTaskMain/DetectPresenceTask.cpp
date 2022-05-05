@@ -5,7 +5,7 @@
 #include <PinChangeInterrupt.h>
 #include "CoffeeMachine.h"
 
-unsigned long Tidle;
+unsigned long Tsleep;
 bool userDetected;
 bool isInSleep;
 
@@ -13,7 +13,7 @@ bool isInSleep;
 void wakeUpNow() {
   if (isInSleep) {
     sleep_disable();
-    Tidle = millis();
+    Tsleep = millis();
     Serial.println("SLEEP_MODE_OFF");
     isInSleep = false;
   }
@@ -28,16 +28,16 @@ void sleepNow() {
   isInSleep = true;
 }
 
-// vai in pausa dopo 5s di attesa.
-void timeBeforePause() {
+// vai in pausa dopo 60s di attesa.
+void timeSleep() {
   static unsigned long dt;
 
-  dt = millis() - Tidle;
+  dt = millis() - Tsleep;
 
   //Interrupt
-  if (dt >= 60000 && !userDetected) {
+  if (dt >= T_IDLE && !userDetected) {
       Serial.println("user not detected, go to sleep");
-      Tidle = millis();
+      Tsleep = millis();
       delay(2000);
       sleepNow();
   }
@@ -70,10 +70,10 @@ void DetectPresenceTask::tick() {
     || currentState == DRINK_TAKEN
   ) {
     userDetected = true;
-    Tidle = millis();
+    Tsleep = millis();
   }
   
-  timeBeforePause();
+  timeSleep();
 
   if (userDetected) {
     coffeeMachine->doState();
