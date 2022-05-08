@@ -10,7 +10,7 @@ long loops = 0;
 Scheduler sched;
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(9600); 
   sched.init(10);
 
   Task* pirTask = new DetectPresenceTask();

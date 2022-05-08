@@ -3,9 +3,7 @@
 #define DEFAULT_QUANTITY 5
 
 BeverageStore::BeverageStore() {
-  this->n_coffee = DEFAULT_QUANTITY;
-  this->n_tea = DEFAULT_QUANTITY;
-  this->n_chocolate = DEFAULT_QUANTITY;  
+  refill();
 }
 
 BeverageStore::BeverageStore(unsigned int n_coffee, unsigned int n_tea, unsigned int n_chocolate) {
@@ -40,4 +38,11 @@ unsigned int BeverageStore::getQuantity(Drink::Type drinkType) {
       return this->n_chocolate;
     break;
   }
+}
+
+// premuto tasto Refill da GUI Java
+void BeverageStore::refill() {
+  this->n_coffee = DEFAULT_QUANTITY;
+  this->n_tea = DEFAULT_QUANTITY;
+  this->n_chocolate = DEFAULT_QUANTITY;  
 }
