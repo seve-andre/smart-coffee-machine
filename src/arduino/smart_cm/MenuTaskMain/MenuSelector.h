@@ -13,6 +13,7 @@ class MenuSelector {
     void printSelection();
     void returnToReadyState();
     void restartTimerIdle();
+    void refill();
 
   private:
     bool drinksAvailable();

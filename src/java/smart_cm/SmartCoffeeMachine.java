@@ -1,9 +1,8 @@
-package smart_cm;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -15,7 +14,17 @@ public class SmartCoffeeMachine extends JFrame {
     private static final int HEIGHT = 500;
     private static final String PROGRAM_TITLE = "Smart Coffee Machine";
 
-    public SmartCoffeeMachine() {
+    private final JLabel lblModality;
+    private final JButton btnRefill;
+    private final JButton btnRecover;
+
+    private final JLabel lblNCoffee;
+    private final JLabel lblNTea;
+    private final JLabel lblNChocolate;
+
+    private final JLabel lblNSelfTest;
+
+    public SmartCoffeeMachine(SerialCommChannel channel) {
         GuiFactory guiFactory = new GuiFactory();
 
         // header with title
@@ -26,25 +35,33 @@ public class SmartCoffeeMachine extends JFrame {
         // central content with labels
         JPanel labelsPanel = new JPanel(new GridLayout(3, 3));
         labelsPanel.setBorder(new EmptyBorder(0, 80, 0, 80));
-        JLabel lblModality = new JLabel("Modality: ");
-        JLabel lblNCoffee = new JLabel("N° Coffee: ");
-        JLabel lblNThea = new JLabel("N° Tea: ");
-        JLabel lblNChocolate = new JLabel("N° Chocolate: ");
-        JLabel lblNSelfTest = new JLabel("N° Self-Test: ");
+        lblModality = new JLabel("Modality: IDLE");
+        lblNCoffee = new JLabel();
+        lblNTea = new JLabel();
+        lblNChocolate = new JLabel();
+        lblNSelfTest = new JLabel();
 
         labelsPanel.add(lblModality);
-        labelsPanel.add(lblNCoffee);
-        labelsPanel.add(lblNThea);
-        labelsPanel.add(lblNChocolate);
         labelsPanel.add(lblNSelfTest);
+        labelsPanel.add(lblNCoffee);
+        labelsPanel.add(lblNTea);
+        labelsPanel.add(lblNChocolate);
 
         // footer with buttons
         JPanel buttonsPanel = new JPanel();
-        JButton btnRefill = guiFactory.createPrimaryButton("Refill");
-        JButton btnRecover = guiFactory.createPrimaryButton("Recover");
+        btnRefill = guiFactory.createPrimaryButton("Refill");
+        btnRecover = guiFactory.createPrimaryButton("Recover");
 
-        ActionListener actionRefill = e -> System.out.println("Refill Mode");
-        ActionListener actionRecover = e -> System.out.println("Recover Mode");
+        // initially refill and recover are not needed, so their visibility is set to false
+        btnRefill.setEnabled(false);
+        btnRecover.setEnabled(false);
+
+        ActionListener actionRefill = e -> {
+            channel.sendMsg("Refill");
+            this.setProducts("5", "5", "5");
+            btnRefill.setEnabled(false);
+        };
+        ActionListener actionRecover = e -> btnRecover.setEnabled(false);
 
         btnRefill.addActionListener(actionRefill);
         btnRecover.addActionListener(actionRecover);
@@ -66,7 +83,65 @@ public class SmartCoffeeMachine extends JFrame {
         this.setVisible(true);
     }
 
-    public static void main(String[] args) {
-        new SmartCoffeeMachine();
+    public void setModality(CoffeeMachineState state) {
+        SwingUtilities.invokeLater(() -> lblModality.setText("Modality: " + state.name()));
+    }
+
+    public void enableAssistance() {
+        btnRefill.setEnabled(true);
+    }
+
+    public void enableRecovery() {
+        btnRecover.setEnabled(true);
+    }
+
+    public void setSelfTests() {
+        lblNSelfTest.setText("");
+    }
+
+    public void setProducts(String coffeeQuantity, String teaQuantity, String chocolateQuantity) {
+        SwingUtilities.invokeLater(() -> {
+            lblNCoffee.setText("N° Coffee: " + coffeeQuantity);
+            lblNTea.setText("N° Tea: " + teaQuantity);
+            lblNChocolate.setText("N° Chocolate: " + chocolateQuantity);
+        });
+    }
+
+    public void reduceQuantity(String product) {
+
+        String currentQuantity;
+        int currentValue;
+
+        switch (product) {
+            case "Tea":
+                currentQuantity = lblNTea.getText();
+                currentValue = Integer.parseInt(currentQuantity.substring(currentQuantity.length() - 1));
+                this.setTeaQuantity(currentValue - 1);
+                break;
+
+            case "Coffee":
+                currentQuantity = lblNCoffee.getText();
+                currentValue = Integer.parseInt(currentQuantity.substring(currentQuantity.length() - 1));
+                this.setCoffeeQuantity(currentValue - 1);
+                break;
+
+            case "Chocolate":
+                currentQuantity = lblNChocolate.getText();
+                currentValue = Integer.parseInt(currentQuantity.substring(currentQuantity.length() - 1));
+                this.setChocolateQuantity(currentValue - 1);
+                break;
+        }
+    }
+
+    private void setTeaQuantity(int teaQuantity) {
+        SwingUtilities.invokeLater(() -> lblNTea.setText("N° Tea: " + teaQuantity));
+    }
+
+    private void setCoffeeQuantity(int coffeeQuantity) {
+        SwingUtilities.invokeLater(() -> lblNCoffee.setText("N° Coffee: " + coffeeQuantity));
+    }
+
+    private void setChocolateQuantity(int chocolateQuantity) {
+        SwingUtilities.invokeLater(() -> lblNChocolate.setText("N° Chocolate: " + chocolateQuantity));
     }
 }

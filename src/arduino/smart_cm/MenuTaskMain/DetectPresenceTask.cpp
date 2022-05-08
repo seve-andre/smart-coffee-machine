@@ -36,7 +36,7 @@ void timeSleep() {
 
   //Interrupt
   if (dt >= T_IDLE && !userDetected) {
-      Serial.println("user not detected, go to sleep");
+      // Serial.println("user not detected, go to sleep");
       Tsleep = millis();
       delay(2000);
       sleepNow();

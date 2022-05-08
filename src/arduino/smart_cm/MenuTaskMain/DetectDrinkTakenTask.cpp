@@ -4,7 +4,7 @@
 #include "WorkingState.h"
 #include "CoffeeMachine.h"
 
-extern bool isSonarActive = false;
+bool isSonarActive = false;
 bool firstTime = true;
 
 DetectDrinkTakenTask::DetectDrinkTakenTask() {

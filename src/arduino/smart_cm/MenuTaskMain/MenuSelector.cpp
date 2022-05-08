@@ -25,7 +25,8 @@ Drink::Type drinks[3] = {
 };
 
 MenuSelector::MenuSelector() {
-  beverages = new BeverageStore(5, 5, 5);
+  beverages = new BeverageStore(0, 0, 0);
+  Serial.println("Quantity:0,0,0");
   potSugar = new Potentiometer(2);
 
   sugarLevel = 0;
@@ -88,6 +89,21 @@ void MenuSelector::printSelection() {
     } else if (btnMake->isPressed()) {
       if (beverages->getQuantity(getSelected()) > 0) {
         beverages->reduceQuantity(getSelected());
+
+        switch (getSelected()) {
+          case Drink::Coffee:
+            Serial.println("REDUCE Coffee");
+          break;
+          
+          case Drink::Tea:
+            Serial.println("REDUCE Tea");
+          break;
+          
+          case Drink::Chocolate:
+            Serial.println("REDUCE Chocolate");
+          break;
+        }
+
         CoffeeMachine::goToWorkingState(WorkingState::MAKE_DRINK);
       }
       return;
@@ -135,4 +151,8 @@ void MenuSelector::returnToReadyState() {
       lcd->clear();
       CoffeeMachine::goToWorkingState(WorkingState::READY);
   }
+}
+
+void MenuSelector::refill() {
+  beverages->refill();
 }

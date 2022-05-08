@@ -1,5 +1,3 @@
-package smart_cm;
-
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import java.awt.Color;
@@ -19,7 +17,7 @@ public class GuiFactory {
     public JButton createPrimaryButton(String text) {
         JButton primaryButton = new JButton(text);
         primaryButton.setBackground(Color.decode("#7d8cff"));
-        primaryButton.setForeground(Color.WHITE);
+        primaryButton.setForeground(Color.BLACK);
         primaryButton.setPreferredSize(new Dimension(150, 40));
 
         return primaryButton;

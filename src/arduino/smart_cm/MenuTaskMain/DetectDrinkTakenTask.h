@@ -5,6 +5,7 @@
 #include "Task.h"
 
 extern bool isSonarActive;
+extern bool firstTime;
 
 class DetectDrinkTakenTask : public Task {
   public:

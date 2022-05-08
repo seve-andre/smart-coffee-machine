@@ -2,7 +2,7 @@
 #define __COFFEE_MACHINE__
 
 #include "MachineState.h"
-#include "WorkingState.h";
+#include "WorkingState.h"
 
 class CoffeeMachine {
   private:

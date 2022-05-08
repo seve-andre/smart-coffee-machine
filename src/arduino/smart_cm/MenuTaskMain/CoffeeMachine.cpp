@@ -24,6 +24,8 @@ int pos = 0;
 bool activeServoCoffeeMachine;
 unsigned long tServoCoffeeMachine;
 
+bool firstTimeAssistance = true;
+
 CoffeeMachine::CoffeeMachine() {
   welcomeState = new WelcomeState();
   readyState = new ReadyState();
@@ -40,39 +42,46 @@ CoffeeMachine::CoffeeMachine() {
 void CoffeeMachine::startWorking() {
   switch (workingState) {
     case WELCOME:
-      Serial.println("WELCOME");
+      Serial.println("idle");
       welcomeState->welcomeMessage();
       welcomeState->timerWelcomeFinished();
     break;
     case READY:
+      Serial.println("idle");
       waitButtonState->resetFirstTime();
       readyState->readyMessage();
     break;
     case WAIT_FOR_BUTTON_INPUT:
+      Serial.println("idle");
       waitButtonState->initButtonsWait();
       waitButtonState->checkButtonsInput();
       menuSelector->restartTimerIdle();
     break;
     case MENU_SELECTION:
+      Serial.println("working");
       //Serial.println("Menu Selection");
       menuSelector->printSelection();
       menuSelector->returnToReadyState();
       drinkFactory->restartServoTimerStop();
     break;
     case MAKE_DRINK:
+      Serial.println("working");
       //Serial.println("MAKE_DRINK");
       drinkFactory->drinkMakingMessage(menuSelector->getSelected());
       drinkFactory->initializeServoTimer();
       drinkFactory->makeDrink(menuSelector->getSelected());
     break;
     case TAKE_DRINK:
+      Serial.println("working");
       drinkFactory->drinkReadyMessage(menuSelector->getSelected());
       // Inserito il drinkMessage in MAKE_DRINK perchè altrimenti interferisce sui valori di Sonar,
       // Da capire perchè Sonar non funziona all'avvio
       isSonarActive = true;
     break;
     case DRINK_TAKEN:
+      Serial.println("working");
       isSonarActive = false;
+      firstTime = true;
       drinkFactory->resetServoTo0();
       workingState = READY;
     break;
@@ -89,7 +98,16 @@ void CoffeeMachine::doState() {
     case SLEEP:
     break;
     case ASSISTANCE:
-      Serial.println("IN ASSISTANCE");
+      if (firstTimeAssistance) {
+        Serial.println("assistance");
+        firstTimeAssistance = false;  
+      }
+
+      if (Serial.available() > 0) {
+        menuSelector->refill();
+        machineState = WORKING;
+        firstTimeAssistance = true;
+      }
     break;
     case SELF_TEST:
       //Serial.println("Self Test case");
