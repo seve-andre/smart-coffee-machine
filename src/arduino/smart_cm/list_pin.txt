@@ -1,0 +1,13 @@
+DIGITAL PIN
+ 3  -> Servo
+ 4  -> Button_UP
+ 5  -> Button_DOWN
+ 6  -> Button_Make
+ 8  -> Echo_Port (Sonar)
+ 9  -> Trig_Port (Sonar)
+ 10 -> PIR
+
+ANALOG PIN
+ A0 -> Temperature Sensor
+ A2 -> POT (Potentiometer)
+   
