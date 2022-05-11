@@ -1,0 +1,13 @@
+Link video dimostrazione:
+
+https://liveunibo-my.sharepoint.com/:v:/g/personal/andrea_severi12_studio_unibo_it/EZsgWUbBaoxGh6JCN5CjF00B9SUUBBBuhSJgEB5Li5DRsA?e=7w4t40
+
+Tempi usati:
+- Tmaking: 10s
+- Ttimeout: 5s
+- Tidle: 20s
+- Tcheck: 180s
+
+Temperature:
+- Temp_min: 17°
+- Temp_max: 24°
