@@ -1,6 +1,6 @@
 public enum CoffeeMachineState {
     IDLE,
     WORKING,
-    RECOVERY,
+    SELF_TEST,
     ASSISTANCE
 }

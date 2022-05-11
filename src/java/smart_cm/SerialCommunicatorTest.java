@@ -1,12 +1,13 @@
 public class SerialCommunicatorTest {
 
     public static void main(String[] args) throws Exception {
-        SerialCommChannel channel = new SerialCommChannel("COM5", 9600);
+        CommChannel channel = new SerialCommChannel("COM5", 9600);
         SmartCoffeeMachine machine = new SmartCoffeeMachine(channel);
         while (true) {
             if (channel.isMsgAvailable()) {
                 String msg = channel.receiveMsg();
                 System.out.println(msg);
+
                 if (msg.contains("Quantity")) {
                     String[] cleanMsg = msg.split(":");
 
@@ -19,6 +20,9 @@ public class SerialCommunicatorTest {
                 } else if (msg.equals("assistance")) {
                     machine.setModality(CoffeeMachineState.ASSISTANCE);
                     machine.enableAssistance();
+                }  else if (msg.equals("self test")) {
+                    machine.setModality(CoffeeMachineState.SELF_TEST);
+                    machine.enableSelfTest();
                 } else if (msg.startsWith("REDUCE")) {
                     String[] reduceProduct = msg.split(" ");
                     machine.reduceQuantity(reduceProduct[1]);

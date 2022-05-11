@@ -1,31 +1,28 @@
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
+import jssc.SerialPortException;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 /**
  * Comm channel implementation based on serial port.
- *
- * @author aricci
  */
 public class SerialCommChannel implements CommChannel, SerialPortEventListener {
 
     private final SerialPort serialPort;
     private final BlockingQueue<String> queue;
-    private StringBuffer currentMsg = new StringBuffer();
+    private StringBuilder currentMsg = new StringBuilder();
 
-    public SerialCommChannel(String port, int rate) throws Exception {
+    public SerialCommChannel(String port, int rate) throws SerialPortException {
         queue = new ArrayBlockingQueue<>(100);
 
         serialPort = new SerialPort(port);
         serialPort.openPort();
 
         serialPort.setParams(rate, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
-
         serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN | SerialPort.FLOWCONTROL_RTSCTS_OUT);
-
         serialPort.addEventListener(this);
     }
 
@@ -76,7 +73,7 @@ public class SerialCommChannel implements CommChannel, SerialPortEventListener {
             try {
                 String msg = serialPort.readString(event.getEventValue());
 
-                msg = msg.replaceAll("\r", "");
+                msg = msg.replace("\r", "");
 
                 currentMsg.append(msg);
 
@@ -87,7 +84,7 @@ public class SerialCommChannel implements CommChannel, SerialPortEventListener {
                     int index = msg2.indexOf("\n");
                     if (index >= 0) {
                         queue.put(msg2.substring(0, index));
-                        currentMsg = new StringBuffer();
+                        currentMsg = new StringBuilder();
                         if (index + 1 < msg2.length()) {
                             currentMsg.append(msg2.substring(index + 1));
                         }
@@ -95,10 +92,10 @@ public class SerialCommChannel implements CommChannel, SerialPortEventListener {
                         goAhead = false;
                     }
                 }
-
-            } catch (Exception ex) {
+            } catch (InterruptedException | SerialPortException ex) {
                 ex.printStackTrace();
                 System.out.println("Error in receiving string from COM-port: " + ex);
+                Thread.currentThread().interrupt();
             }
         }
     }

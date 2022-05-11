@@ -23,8 +23,9 @@ public class SmartCoffeeMachine extends JFrame {
     private final JLabel lblNChocolate;
 
     private final JLabel lblNSelfTest;
+    private int selfTestsCount = 0;
 
-    public SmartCoffeeMachine(SerialCommChannel channel) {
+    public SmartCoffeeMachine(CommChannel channel) {
         GuiFactory guiFactory = new GuiFactory();
 
         // header with title
@@ -61,7 +62,10 @@ public class SmartCoffeeMachine extends JFrame {
             this.setProducts("5", "5", "5");
             btnRefill.setEnabled(false);
         };
-        ActionListener actionRecover = e -> btnRecover.setEnabled(false);
+        ActionListener actionRecover = e -> {
+            channel.sendMsg("Recover");
+            btnRecover.setEnabled(false);
+        };
 
         btnRefill.addActionListener(actionRefill);
         btnRecover.addActionListener(actionRecover);
@@ -91,12 +95,14 @@ public class SmartCoffeeMachine extends JFrame {
         btnRefill.setEnabled(true);
     }
 
-    public void enableRecovery() {
+    public void enableSelfTest() {
         btnRecover.setEnabled(true);
+        selfTestsCount++;
+        setSelfTests();
     }
 
-    public void setSelfTests() {
-        lblNSelfTest.setText("");
+    private void setSelfTests() {
+        lblNSelfTest.setText("N° self test: " + selfTestsCount);
     }
 
     public void setProducts(String coffeeQuantity, String teaQuantity, String chocolateQuantity) {
@@ -108,7 +114,6 @@ public class SmartCoffeeMachine extends JFrame {
     }
 
     public void reduceQuantity(String product) {
-
         String currentQuantity;
         int currentValue;
 
@@ -118,13 +123,11 @@ public class SmartCoffeeMachine extends JFrame {
                 currentValue = Integer.parseInt(currentQuantity.substring(currentQuantity.length() - 1));
                 this.setTeaQuantity(currentValue - 1);
                 break;
-
             case "Coffee":
                 currentQuantity = lblNCoffee.getText();
                 currentValue = Integer.parseInt(currentQuantity.substring(currentQuantity.length() - 1));
                 this.setCoffeeQuantity(currentValue - 1);
                 break;
-
             case "Chocolate":
                 currentQuantity = lblNChocolate.getText();
                 currentValue = Integer.parseInt(currentQuantity.substring(currentQuantity.length() - 1));

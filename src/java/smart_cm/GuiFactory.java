@@ -4,6 +4,9 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 
+/**
+ * Factory pattern to create UI elements with custom style easily.
+ */
 public class GuiFactory {
 
     public JLabel createTitle(String text) {
